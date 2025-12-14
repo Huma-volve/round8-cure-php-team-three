@@ -9,7 +9,7 @@ This README provides the essential steps for setting up the Laravel project loca
 Clone the repository:
 
 ```bash
-git clone https://github.com/Huma-volve/round8-cure-php-team-two.git
+git clone https://github.com/Huma-volve/round8-cure-php-team-three.git
 ```
 
 Install dependencies:
