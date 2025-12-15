@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('password');
-            $table->foreignId('specializations_id')->references('id')->on('specializations')->onUpdate('cascade')->nullable();
+            $table->foreignId('specializations_id')->references('id')->on('specializations')->onUpdate('cascade')->onDelete('set null')->nullable();
             $table->Integer('mobile_number');
             $table->bigInteger('license_number');
             $table->bigInteger('session_price');
