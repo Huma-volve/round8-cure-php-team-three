@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('booking_date');
             $table->time('booking_time');
             $table->enum('status',['Upcoming','Complated','Cancled']);
+            $table->double('price');
             $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('cascade');
             $table->timestamps();
         });
