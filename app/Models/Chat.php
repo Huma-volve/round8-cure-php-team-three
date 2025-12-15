@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model
 {
-    protected $fillable = ['sender_id','sender_to_id','message_id','is_read'];
+    protected $fillable = ['sender_id','sender_to_id','message_id'];
 
     public function usermassage()
     {
@@ -20,6 +20,6 @@ class Chat extends Model
 
     public function message()
     {
-        return $this->belongsTo(Message::class);
+        return $this->hasMany(Message::class);
     }
 }

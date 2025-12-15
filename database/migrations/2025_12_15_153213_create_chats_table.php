@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('sender_to_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('message_id')->constrained('messages')->onDelete('cascade');
-            $table->boolean('is_read')->default(false);
             $table->timestamps();
         });
     }

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->text('message')->nullable();
             $table->string('attachment')->nullable();
+            $table->boolean('is_read')->default(false);
+            $table->foreignId('chat_id')->constrained('chats')->onDelete('cascade');
             $table->timestamps();
         });
     }
