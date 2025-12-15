@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('password');
             $table->foreignId('specializations_id')->references('id')->on('specializations')->onUpdate('cascade')->onDelete('set null')->nullable();
             $table->Integer('mobile_number');
-            $table->bigInteger('license_number');
-            $table->bigInteger('session_price');
-            $table->bigInteger('availability_slots');
+            $table->string('license_number');
+            $table->float('session_price');
+            $table->json('availability_slots');
             $table->json('clinic_location');
             $table->timestamps();
         });

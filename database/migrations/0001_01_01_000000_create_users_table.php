@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('mobile_number');
             $table->date('birth_date');
-            $table->string('location');
+            $table->json('location');
             $table->rememberToken();
             $table->timestamps();
         });
