@@ -17,10 +17,10 @@ class OtpController extends Controller
                 'message' =>'Email not found'
             ], 404);
         }
-        $otp = rand(100000,999999);
+        $otp = rand(1000,9999);
         $user->update([
             'otp' =>$otp,
-            'otp_expires_at' => Carbon::now()->addMinutes(5),
+            'otp_expires_at' => Carbon::now()->addMinutes(1),
         ]);
         return response()->json([
                 'message' =>'Otp sent successfully',
