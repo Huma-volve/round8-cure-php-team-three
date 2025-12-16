@@ -16,7 +16,7 @@ class UserController extends Controller
             'mobile_number' =>'string|max:20'
         ]);
 
-    $user= User::create([
+        $user= User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -25,10 +25,10 @@ class UserController extends Controller
         ]);
         return response()->json([
         'message' =>'Sign Up Successfully' ,
-        'user' =>$user->only(['id','name','email']) 
+        'user' =>$user->only(['id','name','email','mobile_number']) 
         ], 201);
     
-    }
+   }
 
 
    public function login(Request $request){
@@ -47,10 +47,29 @@ class UserController extends Controller
                 'User' => $user,
                 'Token' => $token,
     ], 201);}
-       }
+       
+}
+
    public function logout(Request $request){
     $request->user()->currentAccessToken()->delete();
     return response()->json(['message'=>'Logout Successfully'], 401);
 
    }
+
+   public function deleteAccount(Request $request){
+        $user=Auth::user();
+        if(!$user){
+            return response()->json([
+                'message' =>'Account not authenticated',
+            ], 401);
+        }
+        $user->delete();
+        $request->user()->tokens()->delete();
+        return response()->json([
+            'message'=>'Account deleted successfully',
+        ], 203);
+
+   }
+
 }
+

@@ -29,20 +29,10 @@ class SocialiteController extends Controller
         }
 
         // create user if not exists
-        if (!$user) {
-            $user = User::create([
-                'name'        => $google_user->name,
-                'email'       => $google_user->email,
-                'social_id'   => $google_user->id,
-                'social_type' => 'google',
-                'password'    => Hash::make(uniqid()),
-            ]);
-        }
-
+        if (!$user) 
        return response()->json([
-                'message' => 'Google login successful',
-                'user'    => $user,
-            ], 200);
+            'message' => 'Account Not Found Sign Up First'
+            ], 401);
 
         } catch (\Exception $e) {
             return response()->json([

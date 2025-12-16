@@ -12,6 +12,7 @@ Route::get('/user', function (Request $request) {
 Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
 Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
+Route::delete('delete',[UserController::class,'deleteAccount'])->middleware('auth:sanctum');
 
 //log in with google
 Route::get('auth/google',[SocialiteController::class,'redirectToGoogle']);
