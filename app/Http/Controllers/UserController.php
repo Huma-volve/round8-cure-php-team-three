@@ -12,13 +12,15 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|max:255|email|unique:users',
-            'password' =>'required|min:8|confirmed'
+            'password' =>'required|min:8|confirmed',
+            'mobile_number' =>'string|max:20'
         ]);
 
     $user= User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'mobile_number' => $request->mobile_number,
             // 'profile_photo' => null,
         ]);
         return response()->json([
