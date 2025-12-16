@@ -12,4 +12,9 @@ class Doctor extends Model
  {
     return $this->hasMany(Booking::class);
  }
+
+  protected $casts = [
+        'availability_slots' => 'array',
+        'clinic_location' => 'array',
+    ];
 }
