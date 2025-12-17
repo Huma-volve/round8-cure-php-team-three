@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\PaymentWebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -8,6 +10,7 @@ use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\PatientProfileController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -37,7 +40,10 @@ Route::middleware(['auth:sanctum', 'role:patient'])->group(function() {
 Route::get('/patient/profile/show',[PatientProfileController::class ,'show']);
 Route::put('/patient/profile/update',[PatientProfileController::class ,'update']);
 Route::put('/patient/profile/changePassword', [PatientProfileController::class, 'changePassword']);
+Route::post('patient/bookings',[BookingController::class,'store']);
 });
 
 Route::post('/doctors', [DoctorController::class, 'store']);
+
+Route::post('webhook/stripe', [PaymentWebhookController::class, 'handle']);
 
