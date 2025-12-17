@@ -63,8 +63,13 @@ class User extends Authenticatable
         return $this->hasMany(Chat::class,'sender_to_id');
     }
 
+      public function reviews()
+    {
+        return $this->hasMany(Review::class, 'user_id');
+    }
+
     public function bookings()
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Booking::class, 'user_id');
     }
 }
