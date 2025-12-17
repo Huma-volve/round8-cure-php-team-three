@@ -21,4 +21,14 @@ class Booking extends Model
     {
         return $this->belongsTo(Doctor::class);
     }
+
+     public function review()
+    {
+        return $this->hasOne(Review::class, 'booking_id');
+    }
+
+    public function isCompleted()
+    {
+        return $this->status === 'Completed';
+    }
 }
