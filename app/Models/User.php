@@ -7,11 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use App\Models\Patient;
+use App\Models\Doctor;
+use App\Models\Admin;
+use App\Models\Booking;
+use App\Models\Notification;
+use App\Models\Chat;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,HasApiTokens;
+    use HasFactory, Notifiable,HasApiTokens,HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -38,8 +45,8 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            // 'email_verified_at' => 'datetime',
+            // 'password' => 'hashed',
         ];
     }
 
@@ -61,5 +68,17 @@ class User extends Authenticatable
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+    public function patient()
+    {
+        return $this->hasOne(Patient::class);
+    }
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
+    }
+    public function admin()
+    {
+        return $this->hasOne(Admin::class);
     }
 }

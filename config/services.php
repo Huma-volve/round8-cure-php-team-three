@@ -35,6 +35,7 @@ return [
         ],
     ],
 
+<<<<<<< HEAD
     'stripe' => [
         'secret' => env('STRIPE_SECRET'),
     ],
@@ -45,4 +46,12 @@ return [
 ],
 
 
+=======
+    'google' => [
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => env('GOOGLE_REDIRECT'),
+],
+
+>>>>>>> 360c9e91977b211274e2c550d44aeb80d0169cc1
 ];
