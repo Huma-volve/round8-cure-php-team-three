@@ -2,9 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\BookingStatus;
+use App\Models\Booking;
 use App\Models\Doctor;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class BookingRequest extends FormRequest
@@ -43,6 +46,18 @@ class BookingRequest extends FormRequest
             $bookingTime = $this->input('booking_time');
 
             if (!$doctorId || !$bookingDate || !$bookingTime) {
+                return;
+            }
+            //بحال كان في حجز بنفس الوقت والتاريخ من مستخدم تاني
+            $conflictExists = Booking::query()
+                ->where('doctor_id', $doctorId)
+                ->whereDate('booking_date', $bookingDate)
+                ->whereTime('booking_time', $bookingTime)
+                ->where('status', '!=', BookingStatus::Cancelled->value)
+                ->exists();
+
+            if ($conflictExists) {
+                $validator->errors()->add('booking_time', 'هذا الوقت محجوز مسبقاً لهذا الطبيب.');
                 return;
             }
 
