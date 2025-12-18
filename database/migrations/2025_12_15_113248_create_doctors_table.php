@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('password');
+            $table->string('specialization');
             $table->foreignId('specializations_id')->references('id')->on('specializations')->onUpdate('cascade')->onDelete('cascade');
             $table->Integer('mobile_number');
             $table->string('license_number');
