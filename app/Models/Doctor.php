@@ -1,33 +1,58 @@
 <?php
 
 namespace App\Models;
-
-use App\Models\User;
-use App\Models\Booking;
-
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 use Illuminate\Database\Eloquent\Model;
 
 class Doctor extends Model
 {
-      use HasFactory;
- protected $guarded = [];
+    use HasFactory;
 
- public function bookings()
- {
-    return $this->hasMany(Booking::class);
- }
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'specializations_id',
+        'mobile_number',
+        'license_number',
+        'session_price',
+        'availability_slots',
+        'clinic_location'
+    ];
 
- public function user()
+    protected $casts = [
+        'session_price' => 'decimal:2',
+        'availability_slots' => 'array',
+        'clinic_location' => 'array'
+    ];
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'doctor_id');
+    }
+
+    public function specialization()
+    {
+        return $this->belongsTo(Specialization::class, 'specializations_id');
+    }
+
+    public function averageRating()
+    {
+        return $this->reviews()->avg('rating');
+    }
+
+    public function reviewsCount()
+    {
+        return $this->reviews()->count();
+    }
+
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-
-  protected $casts = [
-        'availability_slots' => 'array',
-        'clinic_location' => 'array',
-    ];
 }
