@@ -29,7 +29,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
     /**
      * Get the attributes that should be cast.
      *
@@ -61,5 +60,15 @@ class User extends Authenticatable
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function favorites(): MorphMany
+    {
+        return $this->morphMany(Favorite::class, 'favorable');
+    }
+
+    public function searchHistories()
+    {
+        return $this->hasMany(searchHistories::class);
     }
 }
