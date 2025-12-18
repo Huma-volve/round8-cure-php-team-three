@@ -21,6 +21,12 @@ return new class extends Migration
             $table->string('mobile_number')->nullable();
             $table->date('birth_date')->nullable();
             $table->json('location')->nullable();
+            $table->string('social_id')->nullable();
+            $table->string('social_type')->nullable();
+            $table->string('otp')->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
+
+
             $table->rememberToken();
             $table->timestamps();
         });

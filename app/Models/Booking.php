@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    protected $fillable = ['user_id','doctor_id','booking_date','booking_time','status','payment_method_id'];
+    protected $fillable = ['user_id','doctor_id','booking_date','booking_time','status','payment_method_id','price'];
 
     protected $cast = [
         'status' => BookingStatus::class,
@@ -20,5 +20,10 @@ class Booking extends Model
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
     }
 }
