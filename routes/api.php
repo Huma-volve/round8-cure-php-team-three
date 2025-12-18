@@ -43,6 +43,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
 
+Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint to find nearby doctors
+
+
 Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
 Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
@@ -68,7 +71,7 @@ Route::put('/patient/profile/changePassword', [PatientProfileController::class, 
 Route::post('patient/bookings',[BookingController::class,'store']);
 });
 
-Route::post('/doctors', [DoctorController::class, 'store']);
 
 Route::post('webhook/stripe', [PaymentWebhookController::class, 'handle']);
+
 

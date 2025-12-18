@@ -33,11 +33,11 @@ class DoctorFactory extends Factory
                 ]
             ],
             'clinic_location' => [
-                'lat' => 30.0444,
-                'lng' => 31.2357,
+                'lat' => 30.0444 + $this->faker->randomFloat(4, -0.05, 0.05),
+                'lng' => 31.2357 + $this->faker->randomFloat(4, -0.05, 0.05),
                 'address' => 'Cairo, Egypt',
             ],
-        
+
         ];
     }
 }
