@@ -9,9 +9,23 @@ use Carbon\Carbon;
 
 class SendUpcomingNotifications extends Command
 {
+    /**
+     * اسم الأمر signature.
+     *
+     * @var string
+     */
     protected $signature = 'notifications:send-upcoming';
+
+    /**
+     * وصف الأمر.
+     *
+     * @var string
+     */
     protected $description = 'Send notifications for upcoming appointments';
 
+    /**
+     * تنفيذ الأمر.
+     */
     public function handle()
     {
         $notificationService = new NotificationService();
@@ -27,7 +41,6 @@ class SendUpcomingNotifications extends Command
                     $booking->user,
                     $booking
                 );
-
                 $this->info("Notification sent for booking #{$booking->id}");
             } catch (\Exception $e) {
                 $this->error("Failed to send notification for booking #{$booking->id}: " . $e->getMessage());
@@ -35,6 +48,5 @@ class SendUpcomingNotifications extends Command
         }
 
         $this->info("Total notifications sent: " . $upcomingBookings->count());
-        return 0;
     }
 }
