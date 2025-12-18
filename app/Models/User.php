@@ -52,7 +52,12 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(Notification::class)->orderBy('created_at', 'desc');
+    }
+
+    public function unreadNotifications()
+    {
+    return $this->notifications()->where('is_read', false);
     }
 
     public function userMessages()
@@ -65,9 +70,14 @@ class User extends Authenticatable
         return $this->hasMany(Chat::class,'sender_to_id');
     }
 
+      public function reviews()
+    {
+        return $this->hasMany(Review::class, 'user_id');
+    }
+
     public function bookings()
     {
-        return $this->hasMany(Booking::class);
+        return $this->hasMany(Booking::class, 'user_id');
     }
     public function patient()
     {
