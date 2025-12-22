@@ -6,15 +6,15 @@
             <div class="col-md-8 m-auto">
               <h4 class="text-center">Create New Doctor</h4>
               <form action={{route('doctors.store')}} method="post" enctype="multipart/form-data" class="text-center">
-                <input type="text" placeholder="ID" class="form-control mt-3">
-                <input type="text" placeholder="Name" class="form-control mt-3">
-                <input type="text" placeholder="Email" class="form-control mt-3">
-                <input type="text" placeholder="Password" class="form-control mt-3">
-                <input type="text" placeholder="Phone" class="form-control mt-3">
-                <input type="text" placeholder="License Number" class="form-control mt-3">
-                <input type="number" placeholder="Session Price" class="form-control mt-3">
-                <input type="number" placeholder="Availability Slots" class="form-control mt-3">
-                <input type="location" placeholder="Clinic Location" class="form-control mt-3">
+                <input type="text" placeholder="ID" class="form-control mt-3" name='id'>
+                <input type="text" placeholder="Name" class="form-control mt-3" name='name'>
+                <input type="text" placeholder="Email" class="form-control mt-3" name='email'>
+                <input type="text" placeholder="Password" class="form-control mt-3" name='password'>
+                <input type="text" placeholder="Phone" class="form-control mt-3" name='mobile_number'>
+                <input type="text" placeholder="License Number" class="form-control mt-3" name='license_number'>
+                <input type="number" placeholder="Session Price" class="form-control mt-3" name='session_price'>
+                <input type="number" placeholder="Availability Slots" class="form-control mt-3" name='availability_slots'>
+                <input type="location" placeholder="Clinic Location" class="form-control mt-3" name='clinic_location'>
                 <input type="submit" class="btn btn-success btn-block mt-3 mb-3" value="Create">
               </form>
             </div>

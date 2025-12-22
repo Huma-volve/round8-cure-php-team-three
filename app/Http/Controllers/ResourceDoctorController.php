@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Http\Requests\DoctorRequest;
 use App\Models\Doctor;
 class ResourceDoctorController extends Controller
 {
@@ -27,9 +27,24 @@ class ResourceDoctorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DoctorRequest $request)
     {
-        
+        $validation = $request->validated();
+
+        $doctor = $request::create([
+            'id' => $request->id,
+            'user_id' => $request->user_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'specialization_id' => $request->user_id,
+            'mobile_number' => $request->mobile_number,
+            'license_number' => $request->license_number,
+            'session_price' => $request->session_price,
+            'availability_slots' => $request->availability_slots,
+            'clinic_location' => $request->clinic_location,
+        ]);
+        return redirect()->route('doctors.index')->with('message','Created Successfully');
     }
 
     /**

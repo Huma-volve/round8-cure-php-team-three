@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // استدعاء Seeder الخاص بالتقييمات فقط
-        $this->call(ReviewsSeeder::class);
+        // $this->call(ReviewsSeeder::class);
         // User::factory(10)->create();
 
         User::factory()->create([
