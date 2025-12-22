@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint to find nearby doctors
 
-
+//! ================== Auth system ============================
 Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
 Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
@@ -64,7 +64,7 @@ Route::get('auth/google',[SocialiteController::class,'redirectToGoogle']);
 Route::get('auth/google/callback',[SocialiteController::class,'handleGoogleCallback']);
 
 //patient profile
-Route::middleware(['auth:sanctum'])->group(function() {
+Route::middleware(['auth:sanctum','role:patient'])->group(function() {
 Route::get('/patient/profile/show',[PatientProfileController::class ,'show']);
 Route::put('/patient/profile/update',[PatientProfileController::class ,'update']);
 Route::put('/patient/profile/changePassword', [PatientProfileController::class, 'changePassword']);
