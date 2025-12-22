@@ -7,6 +7,7 @@ use App\Http\Requests\BookingRequest;
 use App\Models\Booking;
 use App\Models\Payment_method;
 use App\Services\Payments\PaymentService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -21,9 +22,15 @@ class BookingController extends Controller
         $data = $request->validated();
         $data['payment_method_id'] = $paymentMethod->id;
         $data['user_id'] = auth()->user()->id;
-        $data['status'] = BookingStatus::Upcoming;
+        $data['status'] = BookingStatus::Upcoming->value;
 
         $booking = Booking::create($data);
+        $booking->load(['doctor', 'user']);
+
+        (new NotificationService())->sendNewBookingNotification(
+            $booking->doctor,
+            $booking
+        );
 
         $payment = $this->paymentService->process($booking, $paymentMethod);
 
@@ -32,7 +39,6 @@ class BookingController extends Controller
             'payment' => $payment,
             'message' => 'Payment is pending',
         ]);
-
     }
 
 

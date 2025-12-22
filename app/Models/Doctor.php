@@ -55,4 +55,14 @@ class Doctor extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function notifications()
+{
+    return $this->hasMany(Notification::class);
+}
+
+public function unreadNotifications()
+{
+    return $this->notifications()->where('is_read', false);
+}
 }

@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Dashboard\AdminNotificationController;
+use App\Http\Controllers\Dashboard\DoctorNotificationController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PaymentWebhookController;
 use Illuminate\Http\Request;
@@ -19,7 +21,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-//! ==================== notifications ====================
+//! ==================== notifications user ====================
 Route::middleware('auth:sanctum')->group(function () {
     // Notification Routes
     Route::get('/notifications', [NotificationController::class, 'index']);
@@ -32,13 +34,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy']);
 });
 
+//! ==================== notifications Doctor ====================
+Route::middleware(['auth:doctor'])->group(function () {
+    Route::get('/doctor/notifications', [DoctorNotificationController::class, 'index']);
+    Route::get('/doctor/notifications/unread-count', [DoctorNotificationController::class, 'unreadCount']);
+    Route::post('/doctor/notifications/{id}/read', [DoctorNotificationController::class,'markAsRead']);
+});
+
+//! ==================== notifications Admin ====================
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/notifications', [AdminNotificationController::class, 'index']);
+    Route::get('/admin/notifications/unread-count', [AdminNotificationController::class, 'unreadCount']);
+    Route::post('/admin/notifications/{id}/read', [AdminNotificationController::class,'markAsRead']);
+});
+
 //! ==================== reviews ====================
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/my-reviews', [ReviewController::class, 'myReviews']);
     Route::get('/rateable-bookings', [ReviewController::class, 'rateableBookings']);
     Route::post('/reviews', [ReviewController::class, 'store']);
-    
+
     Route::put('/reviews/{id}', [ReviewController::class, 'update']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
@@ -73,5 +89,4 @@ Route::post('patient/bookings',[BookingController::class,'store']);
 
 
 Route::post('webhook/stripe', [PaymentWebhookController::class, 'handle']);
-
 
