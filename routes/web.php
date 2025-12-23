@@ -9,3 +9,9 @@ Route::get('/', function () {
 });
 Route::get('/home',[HomeController::class ,'index'])->name('home');
 Route::resource('/doctors',ResourceDoctorController::class );
+
+Route::middleware(['auth:sanctum'])
+    ->prefix('doctor')
+    ->group(function () {
+        Route::view('bookings', 'doctor.bookings.index');
+    });

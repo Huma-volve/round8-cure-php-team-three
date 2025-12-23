@@ -35,5 +35,42 @@ class BookingController extends Controller
 
     }
 
+    public function index()
+    {
+        $doctorId = auth()->user()->id();
 
+        return Booking::with('user')
+            ->where('doctor_id', $doctorId)
+            ->orderBy('booking_date')
+            ->get();
+    }
+
+    public function updateStatus(Request $request, Booking $booking)
+    {
+        abort_if($booking->doctor_id !== auth()->user()->id(), 403);
+
+        $booking->update([
+            'status' => $request->status
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function reschedule(Request $request, Booking $booking)
+    {
+        abort_if($booking->doctor_id !== auth()->user()->id(), 403);
+
+        $request->validate([
+            'booking_date' => 'required|date|after:today',
+            'booking_time' => 'required'
+        ]);
+
+        $booking->update([
+            'booking_date' => $request->booking_date,
+            'booking_time' => $request->booking_time,
+            'status' => BookingStatus::Upcoming
+        ]);
+
+        return response()->json(['success' => true]);
+    }
 }

@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-reviews', [ReviewController::class, 'myReviews']);
     Route::get('/rateable-bookings', [ReviewController::class, 'rateableBookings']);
     Route::post('/reviews', [ReviewController::class, 'store']);
-    
+
     Route::put('/reviews/{id}', [ReviewController::class, 'update']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
@@ -48,7 +48,10 @@ Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint 
 //! ================== Auth system ============================
 Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
-Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
+Route::post('logout',[UserController::class,'logout'])
+->middleware('auth:sanctum')
+->name('logout');
+;
 Route::delete('delete',[UserController::class,'deleteAccount'])->middleware('auth:sanctum');
 
 //password => forget & reset
@@ -74,4 +77,9 @@ Route::post('patient/bookings',[BookingController::class,'store']);
 
 Route::post('webhook/stripe', [PaymentWebhookController::class, 'handle']);
 
+Route::middleware(['auth:sanctum'])->group(function() {
+    Route::get('doctor/bookings', [BookingController::class, 'index']);
+    Route::patch('bookings/{booking}/status', [BookingController::class, 'updateStatus']);
+    Route::patch('bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
+});
 
