@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'fake.doctor' => \App\Http\Middleware\FakeDoctorAuth::class,
+            'fake.admin' => \App\Http\Middleware\FakeAdmin::class,
         ]);
 
     })

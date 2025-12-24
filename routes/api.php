@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\BookingController;
@@ -72,6 +73,9 @@ Route::get('/patient/profile/show',[PatientProfileController::class ,'show']);
 Route::put('/patient/profile/update',[PatientProfileController::class ,'update']);
 Route::put('/patient/profile/changePassword', [PatientProfileController::class, 'changePassword']);
 Route::post('patient/bookings',[BookingController::class,'store']);
+Route::get('patient/all-bookings',[BookingController::class,'getBookingsUser']);
+Route::post('patient/bookings/{booking}/cancel',[BookingController::class,'cancelByPatient']);
+Route::post('patient/bookings/{booking}/reschedule',[BookingController::class,'rescheduleByPatient']);
 });
 
 
@@ -85,10 +89,17 @@ Route::middleware(['fake.doctor'])->group(function() {
     Route::patch('doctor/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
 });
 
-Route::get('doctor/test', function() {
-        return response()->json([
-            'message' => 'API is working',
-            'timestamp' => now()
-        ]);
-    });
+Route::prefix('admin')->middleware('fake.admin')->group(function () {
+
+
+    Route::get('bookings/data', [AdminController::class,'dataBookings']);
+    Route::delete('bookings/{booking}', [AdminController::class,'destroyBooking']);
+
+    Route::get('payments/data', [AdminController::class,'dataPayments']);
+    Route::delete('payments/{payment}', [AdminController::class,'destroyPayment']);
+
+    Route::get('bookings/{booking}/payment', [AdminController::class,'getBookingPayment']);
+
+});
+
 

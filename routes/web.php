@@ -15,3 +15,14 @@ Route::middleware(['fake.doctor'])
     ->group(function () {
         Route::view('bookings', 'doctor.bookings.index')->name('doctor.bookings');
     });
+
+
+Route::middleware(['fake.admin'])
+   ->group(function () {
+    Route::view('payments','admin.payments');
+    Route::view('bookings','admin.booking');
+
+});
+
+
+
