@@ -20,6 +20,11 @@ class BookingsRepositories
     {
         return Booking::findOrFail($id);
     }
+
+    public function delete(Booking $booking): void
+    {
+        $booking->delete();
+    }
     public function getBookingsByUserId($userId)
     {
         return Booking::with(['doctor', 'payment', 'paymentMethod'])

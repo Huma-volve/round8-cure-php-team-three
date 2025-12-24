@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Repositories\Bookings\BookingsRepositories;
+use App\Repositories\Payments\PaymentRepositories;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    public function __construct(
+        protected PaymentRepositories $paymentRepositories,
+        protected BookingsRepositories $bookingsRepositories,
+    )
+    {}
     public function dataBookings(Request $request)
     {
         $bookings = Booking::with(['user','doctor','payment'])
@@ -27,8 +34,10 @@ class AdminController extends Controller
 
     public function destroyBooking($id)
     {
-        $booking = Booking::findOrFail($id);
-        $booking->delete();
+        $booking = $this->bookingsRepositories->findById($id);
+
+        $this->bookingsRepositories->delete($booking);
+
         return response()->json(['success'=>true]);
     }
 
@@ -40,8 +49,8 @@ class AdminController extends Controller
 
         $payments = Payment::with(['booking.user','booking.doctor','paymentMethod'])
             ->when($q,function($query)use($q){
-                $query->whereHas('booking.user',fn($u)=>$u->where('name','like',"%$q%"))
-                      ->orWhereHas('booking.doctor',fn($d)=>$d->where('name','like',"%$q%"));
+        $query->whereHas('booking.user',fn($u)=>$u->where('name','like',"%$q%"))
+            ->orWhereHas('booking.doctor',fn($d)=>$d->where('name','like',"%$q%"));
             })
             ->when($status,fn($query)=>$query->where('status',$status))
             ->latest()
@@ -52,8 +61,10 @@ class AdminController extends Controller
 
     public function destroyPayment($id)
     {
-        $payment = Payment::findOrFail($id);
-        $payment->delete();
+        $payment = $this->paymentRepositories->findById($id);
+
+        $this->paymentRepositories->delete($payment);
+
         return response()->json(['success'=>true]);
     }
 

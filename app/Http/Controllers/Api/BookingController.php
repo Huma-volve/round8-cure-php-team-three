@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateBookingRequest;
 use App\Models\Booking;
 use App\Models\Payment_method;
 use App\Repositories\Bookings\BookingsRepositories;
+use App\Repositories\Payments\PaymentRepositories;
 use App\Services\Payments\PaymentService;
 use Illuminate\Http\Request;
 use Stripe\Refund;
@@ -18,7 +19,8 @@ class BookingController extends Controller
 {
     public function __construct(
         protected  PaymentService $paymentService,
-        protected  BookingsRepositories $bookingsRepositories
+        protected  BookingsRepositories $bookingsRepositories,
+        protected PaymentRepositories $paymentRepositories
         )
     {}
     public function store(BookingRequest $request)
@@ -62,7 +64,8 @@ class BookingController extends Controller
                 'payment_intent' => $payment->transaction_id,
             ]);
 
-            $payment->update([
+
+            $this->paymentRepositories->update($payment, [
                 'status' => 'refunded',
                 'response' => $refund,
             ]);
