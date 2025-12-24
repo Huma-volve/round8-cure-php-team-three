@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,8 +65,10 @@ class DoctorNotificationController extends Controller
 
     public function unreadCount()
     {
-        $doctor = Auth::guard('doctor')->user();
-        $userId = method_exists($doctor, 'getAttribute') ? $doctor->getAttribute('user_id') : ($doctor->user->id ?? null);
+        $doctor = Auth::user();
+        $userId = method_exists($doctor, 'getAttribute') && $doctor->getAttribute('user_id')
+            ? $doctor->getAttribute('user_id')
+            : ($doctor->id ?? null);
 
         $count = Notification::where('user_id', $userId)
             ->where('is_read', false)
@@ -75,5 +78,18 @@ class DoctorNotificationController extends Controller
             'success' => true,
             'unread_count' => $count
         ]);
+    }
+
+    public function testCreate(Request $request)
+    {
+        $doctor = Auth::user();
+        $title = $request->input('title', 'Test Notification');
+        $body = $request->input('body', 'This is a test notification for doctor');
+        $notification = (new NotificationService())->sendToDoctor($doctor, $title, $body);
+
+        return response()->json([
+            'success' => true,
+            'notification' => $notification
+        ], 201);
     }
 }

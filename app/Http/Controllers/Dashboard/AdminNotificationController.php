@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,5 +56,18 @@ class AdminNotificationController extends Controller
             'success' => true,
             'message' => 'تم تحديد الإشعار كمقروء'
         ]);
+    }
+
+    public function testCreate(Request $request)
+    {
+        $admin = Auth::user();
+        $title = $request->input('title', 'Test Admin Notification');
+        $body = $request->input('body', 'This is a test notification for admin');
+        $notification = (new NotificationService())->sendSystemAlertNotification($admin, $title, $body);
+
+        return response()->json([
+            'success' => true,
+            'notification' => $notification
+        ], 201);
     }
 }

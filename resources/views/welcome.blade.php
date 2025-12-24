@@ -118,7 +118,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           }
 
           $unreadCount = $currentUserId ? (int) \App\Models\Notification::where('user_id', $currentUserId)->where('is_read', false)->count() : 0;
-          $recentNotifications = $currentUserId ? \App\Models\Notification::where('user_id', $currentUserId)->orderBy('created_at', 'desc')->limit(5)->get() : collect();
+          $recentNotifications = $currentUserId ? \App\Models\Notification::where('user_id', $currentUserId)->orderBy('created_at', 'desc')->limit(10)->get() : collect();
         @endphp
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>

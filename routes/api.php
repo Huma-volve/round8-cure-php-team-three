@@ -28,25 +28,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/notifications/delete-all', [NotificationController::class, 'destroyAll']);
+    Route::post('/notifications/test', [NotificationController::class, 'testCreate']);
 
     Route::get('/notifications/{notification}', [NotificationController::class, 'show']);
     Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead']);
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy']);
 });
 
-//! ==================== notifications Doctor ====================
-Route::middleware(['auth:doctor'])->group(function () {
-    Route::get('/doctor/notifications', [DoctorNotificationController::class, 'index']);
-    Route::get('/doctor/notifications/unread-count', [DoctorNotificationController::class, 'unreadCount']);
-    Route::post('/doctor/notifications/{id}/read', [DoctorNotificationController::class,'markAsRead']);
-});
 
-//! ==================== notifications Admin ====================
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/notifications', [AdminNotificationController::class, 'index']);
-    Route::get('/admin/notifications/unread-count', [AdminNotificationController::class, 'unreadCount']);
-    Route::post('/admin/notifications/{id}/read', [AdminNotificationController::class,'markAsRead']);
-});
 
 //! ==================== reviews ====================
 Route::middleware('auth:sanctum')->group(function () {
@@ -89,4 +78,3 @@ Route::post('patient/bookings',[BookingController::class,'store']);
 
 
 Route::post('webhook/stripe', [PaymentWebhookController::class, 'handle']);
-

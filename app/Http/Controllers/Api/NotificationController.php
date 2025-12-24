@@ -80,4 +80,17 @@ class NotificationController extends Controller
             'message' => 'All notifications deleted successfully'
         ]);
     }
+
+    public function testCreate(Request $request)
+    {
+        $user = Auth::user();
+        $notification = Notification::create([
+            'user_id' => $user->id,
+            'title' => $request->input('title', 'Test Notification'),
+            'body' => $request->input('body', 'This is a test notification'),
+            'is_read' => false
+        ]);
+
+        return new NotificationResource($notification);
+    }
 }
