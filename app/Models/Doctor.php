@@ -3,17 +3,19 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Specialization;
+use Spatie\Permission\Traits\HasRoles;
 class Doctor extends Model
 {
-    use HasFactory;
+    use HasFactory,HasRoles;
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'user_id',
+        // 'name',
+        // 'email',
+        // 'password',
         'specializations_id',
-        'mobile_number',
+        // 'mobile_number',
         'license_number',
         'session_price',
         'availability_slots',
@@ -53,6 +55,7 @@ class Doctor extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class , 'user_id');
     }
+   
 }

@@ -14,15 +14,11 @@ return new class extends Migration
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
              $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('name');
-            $table->string('email');
-            $table->string('password');
             $table->foreignId('specializations_id')->references('id')->on('specializations')->onUpdate('cascade')->onDelete('cascade');
-            $table->Integer('mobile_number');
             $table->string('license_number');
             $table->float('session_price');
-            $table->json('availability_slots');
-            $table->json('clinic_location');
+            $table->json('availability_slots')->nullable();
+            $table->json('clinic_location')->nullable();
             $table->timestamps();
         });
     }

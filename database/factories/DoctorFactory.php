@@ -5,6 +5,8 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Specialization;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Doctor>
  */
@@ -19,11 +21,7 @@ class DoctorFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name' => 'Dr. ' . $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'password' => Hash::make('password'),
-            'specializations_id' => 1, // لازم specialization موجود
-            'mobile_number' => $this->faker->unique()->numerify('01#########'),
+            'specializations_id' => Specialization::inRandomOrder()->first()->id,
             'license_number' => $this->faker->unique()->bothify('LIC#####'),
             'session_price' => $this->faker->numberBetween(100, 500),
             'availability_slots' => [
