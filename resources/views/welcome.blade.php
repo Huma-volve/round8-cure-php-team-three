@@ -17,7 +17,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Bootstrap -->
   <link rel="stylesheet" href={{asset("admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css")}}>
   <!-- Theme style -->
-
   <link rel="stylesheet" href={{asset("admin/dist/css/adminlte.min.css")}}>
   
   
