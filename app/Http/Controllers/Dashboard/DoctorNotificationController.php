@@ -23,10 +23,6 @@ class DoctorNotificationController extends Controller
 
         $query = Notification::where('user_id', $userId);
 
-        if ($request->has('type')) {
-            $query->where('type', $request->type);
-        }
-
         if ($request->has('is_read')) {
             $query->where('is_read', $request->is_read);
         }

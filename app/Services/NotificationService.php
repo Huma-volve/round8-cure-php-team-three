@@ -178,58 +178,5 @@ public function sendNewReviewNotification($doctor, array $reviewData)
         return $this->sendBroadcastNotification($allUserIds, $title, $message);
     }
 
-    public function createDoctorBookingNotification($doctorId, $booking, $patientName)
-    {
-        return Notification::create([
-            'title' => 'حجز جديد',
-            'body' => "حجز جديد من المريض {$patientName}",
-            'type' => 'booking',
-            'doctor_id' => $doctorId,
-            'related_id' => $booking->id,
-            'related_type' => 'App\\Models\\Booking'
-        ]);
-    }
-
-    /**
-     * إنشاء إشعار تقييم جديد للطبيب
-     */
-    public function createDoctorReviewNotification($doctorId, $review, $patientName)
-    {
-        return Notification::create([
-            'title' => 'تقييم جديد',
-            'body' => "تقييم جديد من المريض {$patientName}",
-            'type' => 'review',
-            'doctor_id' => $doctorId,
-            'related_id' => $review->id,
-            'related_type' => 'App\\Models\\Review'
-        ]);
-    }
-
-    /**
-     * إنشاء إشعار رسالة جديدة للطبيب
-     */
-    public function createDoctorChatNotification($doctorId, $message, $patientName)
-    {
-        return Notification::create([
-            'title' => 'رسالة جديدة',
-            'body' => "رسالة جديدة من المريض {$patientName}",
-            'type' => 'chat',
-            'doctor_id' => $doctorId,
-            'related_id' => $message->id,
-            'related_type' => 'App\\Models\\Message'
-        ]);
-    }
-
-    /**
-     * إنشاء إشعار نظام للمسؤول
-     */
-    public function createAdminSystemNotification($adminId, $title, $body)
-    {
-        return Notification::create([
-            'title' => $title,
-            'body' => $body,
-            'type' => 'system',
-            'admin_id' => $adminId
-        ]);
-    }
+    
 }

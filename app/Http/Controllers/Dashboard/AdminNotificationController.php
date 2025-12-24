@@ -23,10 +23,6 @@ class AdminNotificationController extends Controller
 
         $query = Notification::where('user_id', $userId);
 
-        if ($request->has('type')) {
-            $query->where('type', $request->type);
-        }
-
         $notifications = $query->orderBy('created_at', 'desc')
             ->paginate($request->input('per_page', 20));
 

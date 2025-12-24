@@ -18,6 +18,7 @@ class DoctorFactory extends Factory
     public function definition(): array
     {
         return [
+            // 'user_id' => User::factory(),
             'name' => 'Dr. ' . $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => Hash::make('password'),
