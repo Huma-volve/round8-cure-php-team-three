@@ -77,9 +77,18 @@ Route::post('patient/bookings',[BookingController::class,'store']);
 
 Route::post('webhook/stripe', [PaymentWebhookController::class, 'handle']);
 
-Route::middleware(['auth:sanctum'])->group(function() {
+Route::middleware(['fake.doctor'])->group(function() {
+    Route::get('doctor/bookings/stats', [BookingController::class, 'stats']);
+    Route::get('doctor/bookings/today', [BookingController::class, 'today']);
     Route::get('doctor/bookings', [BookingController::class, 'index']);
-    Route::patch('bookings/{booking}/status', [BookingController::class, 'updateStatus']);
-    Route::patch('bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
+    Route::patch('doctor/bookings/{booking}/status', [BookingController::class, 'updateStatus']);
+    Route::patch('doctor/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
 });
+
+Route::get('doctor/test', function() {
+        return response()->json([
+            'message' => 'API is working',
+            'timestamp' => now()
+        ]);
+    });
 

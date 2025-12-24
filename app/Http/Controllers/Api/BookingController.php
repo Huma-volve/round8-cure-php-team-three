@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Http\Controllers\Controller;
 use App\Enums\BookingStatus;
 use App\Http\Requests\BookingRequest;
+use App\Http\Requests\UpdateBookingRequest;
 use App\Models\Booking;
 use App\Models\Payment_method;
 use App\Services\Payments\PaymentService;
@@ -35,19 +37,45 @@ class BookingController extends Controller
 
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $doctorId = auth()->user()->id();
+        $doctorId = 1; // مؤقتاً لحين اكتمال auth
 
-        return Booking::with('user')
-            ->where('doctor_id', $doctorId)
+        $query = Booking::with('user')
+            ->where('doctor_id', $doctorId);
+
+        if ($request->filled('q')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->q . '%');
+            });
+        }
+
+        if ($request->filled('from')) {
+            $query->whereDate('booking_date', '>=', $request->from);
+        }
+
+        if ($request->filled('to')) {
+            $query->whereDate('booking_date', '<=', $request->to);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+
+        return $query
             ->orderBy('booking_date')
+            ->orderBy('booking_time')
             ->get();
     }
 
-    public function updateStatus(Request $request, Booking $booking)
+
+    public function updateStatus(Request $request, $id)
     {
-        abort_if($booking->doctor_id !== auth()->user()->id(), 403);
+        $booking = Booking::findOrFail($id);
+
+        abort_if($booking->doctor_id !== auth()->user()->id, 403);
+
 
         $booking->update([
             'status' => $request->status
@@ -56,21 +84,20 @@ class BookingController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function reschedule(Request $request, Booking $booking)
+    public function rescheduleByPatient(UpdateBookingRequest $request, $id)
     {
-        abort_if($booking->doctor_id !== auth()->user()->id(), 403);
-
-        $request->validate([
-            'booking_date' => 'required|date|after:today',
-            'booking_time' => 'required'
-        ]);
+        $booking = Booking::findOrFail($id);
 
         $booking->update([
             'booking_date' => $request->booking_date,
             'booking_time' => $request->booking_time,
-            'status' => BookingStatus::Upcoming
+            'status' => BookingStatus::Rescheduled->value,
         ]);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'booking' => $booking,
+        ]);
     }
+
 }

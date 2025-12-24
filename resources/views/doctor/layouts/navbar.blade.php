@@ -15,7 +15,7 @@
         {{-- Doctor Name --}}
         <li class="nav-item">
             <span class="nav-link">
-                👨‍⚕️ {{ auth('doctor')->user()->name }}
+                👨‍⚕️ {{ auth()->user()->name }}
             </span>
         </li>
 

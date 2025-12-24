@@ -10,7 +10,7 @@
                             Doctors
                             <span class="badge badge-info">{{count($doctors)}}</span>
                         </div>
-                        <a href={{route('doctors.index')}} class="btn btn-success float-right">View All Doctors</a>
+                        <a href="" class="btn btn-success float-right">View All Doctors</a>
                     </div>
                     <div class="card-body">
                         <table class="table table-dark text-center">

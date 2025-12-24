@@ -10,8 +10,8 @@ Route::get('/', function () {
 Route::get('/home',[HomeController::class ,'index'])->name('home');
 Route::resource('/doctors',ResourceDoctorController::class );
 
-Route::middleware(['auth:sanctum'])
+Route::middleware(['fake.doctor'])
     ->prefix('doctor')
     ->group(function () {
-        Route::view('bookings', 'doctor.bookings.index');
+        Route::view('bookings', 'doctor.bookings.index')->name('doctor.bookings');
     });
