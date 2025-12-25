@@ -7,7 +7,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class DoctorController extends Controller
-{    
+{   
+    public function show($id)
+    {
+        $doctor = Doctor::with('specialization')->find($id);
+
+        if(!$doctor){
+            return response()->json(['message' => 'Doctor not found'], 404);
+        }
+        $data = [
+        'id' => $doctor->id,
+        'name' => $doctor->name,
+        'email' => $doctor->email,
+        'mobile_number' => $doctor->mobile_number,
+        'license_number' => $doctor->license_number,
+        'session_price' => $doctor->session_price,
+        'specialization' => $doctor->specialization ? $doctor->specialization->name : null,
+        'availability_slots' => $doctor->availability_slots,
+        'clinic_location' => $doctor->clinic_location,
+    ];
+        return response()->json($data);
+    }
+    
     // هتجيب الدكاترة الاقرب لموقع معين
     public function nearby(Request $request)
     {

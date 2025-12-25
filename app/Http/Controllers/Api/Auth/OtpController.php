@@ -10,15 +10,15 @@ class OtpController extends Controller
 {
     public function sendOtp(Request $request){
         $request->validate([
-            'email'=> 'required|string|email'
+           'mobile_number' =>'required|string|max:20'
         ]);
-        $user = User::where('email',$request->email)->first();
+        $user = User::where('mobile_number',$request->mobile_number)->first();
         if(!$user){
             return response()->json([
-                'message' =>'Email not found'
+                'message' =>'Phone Number not found'
             ], 404);
         }
-        $otp = rand(1000,9999);
+        $otp = 1234;
         $user->update([
             'otp' =>$otp,
             'otp_expires_at' => Carbon::now()->addMinutes(10),
@@ -31,10 +31,10 @@ class OtpController extends Controller
     }
     public function otpVerify(Request $request){
          $request->validate([
-            'email'=> 'required|string|email',
+           'mobile_number' =>'required|string|max:20',
             'otp'=> 'required'
         ]);
-        $user = User::where('email',$request->email)->first();
+        $user = User::where('mobile_number',$request->mobile_number)->first();
         if(!$user){
             return response()->json([
                 'message' =>'User not found',

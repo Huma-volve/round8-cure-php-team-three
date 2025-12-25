@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DoctorRequest extends FormRequest
+class DoctorCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,15 +22,16 @@ class DoctorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required','integer','exists:doctors,id'],
             'name' => ['required','string'],
-            'email' => ['required','string','exists:doctors,email','email'],
+            'email' => ['required','string','unique:doctors,email','email'],
             'password' => ['required','string','min:8'],
             'mobile_number' => ['required','string','max:20'],
             'license_number' => ['required','integer'],
             'session_price' => ['required','float'],
-            'availability_slots' => ['null'],
-            'clinic_location' => ['null'],
+            'user_id' => ['required','integer','unique:doctors,user_id','exists:users,id'],
+            'specializations_id' => ['required','exists:specializations,id'],
+            'availability_slots' => ['nullable'],
+            'clinic_location' => ['nullable'],
         ];
     }
 }

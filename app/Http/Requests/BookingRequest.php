@@ -73,7 +73,7 @@ class BookingRequest extends FormRequest
                 return;
             }
 
-            $dayName = strtolower($date->format('l')); 
+            $dayName = strtolower($date->format('l'));
             $slots = is_array($doctor->availability_slots) ? $doctor->availability_slots : [];
 
             foreach ($slots as $slot) {

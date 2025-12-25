@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\BookingController;
@@ -49,11 +50,15 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint to find nearby doctors
+Route::get('/doctors/{id}', [DoctorController::class, 'show']); // Endpoint to get doctor details by ID
 
-//! ================== Auth system ============================
+// ================== Auth system ============================
 Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
-Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
+Route::post('logout',[UserController::class,'logout'])
+->middleware('auth:sanctum')
+->name('logout');
+;
 Route::delete('delete',[UserController::class,'deleteAccount'])->middleware('auth:sanctum');
 
 //password => forget & reset
@@ -74,7 +79,34 @@ Route::get('/patient/profile/show',[PatientProfileController::class ,'show']);
 Route::put('/patient/profile/update',[PatientProfileController::class ,'update']);
 Route::put('/patient/profile/changePassword', [PatientProfileController::class, 'changePassword']);
 Route::post('patient/bookings',[BookingController::class,'store']);
+Route::get('patient/all-bookings',[BookingController::class,'getBookingsUser']);
+Route::post('patient/bookings/{booking}/cancel',[BookingController::class,'cancelByPatient']);
+Route::post('patient/bookings/{booking}/reschedule',[BookingController::class,'rescheduleByPatient']);
 });
 
 
+
 Route::post('webhook/stripe', [PaymentWebhookController::class, 'handle']);
+
+Route::middleware(['auth:sanctum','role:doctor'])->group(function() {
+    Route::get('doctor/bookings/stats', [BookingController::class, 'stats']);
+    Route::get('doctor/bookings/today', [BookingController::class, 'today']);
+    Route::get('doctor/bookings', [BookingController::class, 'index']);
+    Route::patch('doctor/bookings/{booking}/status', [BookingController::class, 'updateStatus']);
+    Route::patch('doctor/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
+});
+
+Route::middleware(['auth:sanctum','role:admin'])->group(function () {
+
+
+    Route::get('bookings/data', [AdminController::class,'dataBookings']);
+    Route::delete('bookings/{booking}', [AdminController::class,'destroyBooking']);
+
+    Route::get('payments/data', [AdminController::class,'dataPayments']);
+    Route::delete('payments/{payment}', [AdminController::class,'destroyPayment']);
+
+    Route::get('bookings/{booking}/payment', [AdminController::class,'getBookingPayment']);
+
+});
+
+
