@@ -31,7 +31,7 @@ class BookingRequest extends FormRequest
     {
         return [
             'doctor_id' => ['required', 'integer', 'exists:doctors,id'],
-            'booking_date' => ['required', 'date', 'after_or_equal:today'],
+            'booking_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
             'booking_time' => ['required', 'date_format:H:i'],
             'price' => ['required', 'numeric', 'min:0'],
             'payment_method_id' => ['required', 'integer', 'exists:payment_methods,id'],

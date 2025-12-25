@@ -6,15 +6,19 @@ use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\Payment_method;
 use App\Payments\PaymentFactory;
+use App\Repositories\Payments\PaymentRepositories;
 
 class PaymentService
 {
+     public function __construct(
+        protected PaymentRepositories $paymentRepositories
+     ){}
     public function process(
         Booking $booking,
         Payment_method $paymentMethod
     ): Payment {
-
-        $payment = Payment::create([
+        
+        $payment = $this->paymentRepositories->create([
             'booking_id' => $booking->id,
             'payment_method_id' => $paymentMethod->id,
             'amount' => $booking->price,
