@@ -73,8 +73,7 @@ Route::get('/patient/profile/show',[PatientProfileController::class ,'show']);
 Route::put('/patient/profile/update',[PatientProfileController::class ,'update']);
 Route::put('/patient/profile/changePassword', [PatientProfileController::class, 'changePassword']);
 Route::post('patient/bookings',[BookingController::class,'store']);
- Route::get('patient/all-bookings',[BookingController::class,'getBookingsUser']);
-
+Route::get('patient/all-bookings',[BookingController::class,'getBookingsUser']);
 Route::post('patient/bookings/{booking}/cancel',[BookingController::class,'cancelByPatient']);
 Route::post('patient/bookings/{booking}/reschedule',[BookingController::class,'rescheduleByPatient']);
 });
