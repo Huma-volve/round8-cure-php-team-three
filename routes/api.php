@@ -22,7 +22,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-//! ==================== notifications user ====================
+// notifications user 
 Route::middleware('auth:sanctum')->group(function () {
     // Notification Routes
     Route::get('/notifications', [NotificationController::class, 'index']);
@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-//! ==================== reviews ====================
+// reviews 
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/my-reviews', [ReviewController::class, 'myReviews']);
@@ -53,8 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint to find nearby doctors
-Route::get('/doctors/{id}', [DoctorController::class, 'show']); // Endpoint to get doctor details by ID
-
+Route::get('/doctors/{id}', [DoctorController::class, 'showById']); // Endpoint to get doctor details by ID
+Route::get('/doctors', [DoctorController::class, 'allDoctors']); // Endpoint to list all doctors with filters
 // ================== Auth system ============================
 Route::post('register',[UserController::class,'register']);
 Route::post('otpVerifyForRegister',[UserController::class,'otpVerifyForRegister']);
