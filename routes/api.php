@@ -20,7 +20,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-//! ==================== notifications ====================
+// ==================== notifications ====================
 Route::middleware('auth:sanctum')->group(function () {
     // Notification Routes
     Route::get('/notifications', [NotificationController::class, 'index']);
@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy']);
 });
 
-//! ==================== reviews ====================
+// ==================== reviews ====================
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/my-reviews', [ReviewController::class, 'myReviews']);
@@ -45,8 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint to find nearby doctors
+Route::get('/doctors/{id}', [DoctorController::class, 'show']); // Endpoint to get doctor details by ID
 
-//! ================== Auth system ============================
+// ================== Auth system ============================
 Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
 Route::post('logout',[UserController::class,'logout'])
