@@ -4,6 +4,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Dashboard\AdminNotificationController;
+use App\Http\Controllers\Dashboard\DoctorNotificationController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\PaymentWebhookController;
 use Illuminate\Http\Request;
@@ -20,20 +22,23 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// ==================== notifications ====================
+//! ==================== notifications user ====================
 Route::middleware('auth:sanctum')->group(function () {
     // Notification Routes
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/notifications/delete-all', [NotificationController::class, 'destroyAll']);
+    Route::post('/notifications/test', [NotificationController::class, 'testCreate']);
 
     Route::get('/notifications/{notification}', [NotificationController::class, 'show']);
     Route::post('/notifications/{notification}/mark-read', [NotificationController::class, 'markAsRead']);
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy']);
 });
 
-// ==================== reviews ====================
+
+
+//! ==================== reviews ====================
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/my-reviews', [ReviewController::class, 'myReviews']);

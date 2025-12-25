@@ -177,4 +177,6 @@ public function sendNewReviewNotification($doctor, array $reviewData)
 
         return $this->sendBroadcastNotification($allUserIds, $title, $message);
     }
+
+    
 }
