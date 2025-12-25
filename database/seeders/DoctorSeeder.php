@@ -2,18 +2,22 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\Models\Doctor;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use PhpParser\Comment\Doc;
 
 class DoctorSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Doctor::factory()->count(20)->create();
+        User::factory()->count(20)->create()->each(function ($user) {
+            // Assign role doctor
+            $user->assignRole('doctor');
+
+            // Create doctor linked to this user
+            Doctor::factory()->create([
+                'user_id' => $user->id,
+            ]);
+        });
     }
 }

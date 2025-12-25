@@ -81,7 +81,7 @@ Route::post('patient/bookings/{booking}/reschedule',[BookingController::class,'r
 
 Route::post('webhook/stripe', [PaymentWebhookController::class, 'handle']);
 
-Route::middleware(['fake.doctor'])->group(function() {
+Route::middleware(['auth:sanctum','role:doctor'])->group(function() {
     Route::get('doctor/bookings/stats', [BookingController::class, 'stats']);
     Route::get('doctor/bookings/today', [BookingController::class, 'today']);
     Route::get('doctor/bookings', [BookingController::class, 'index']);
@@ -89,7 +89,7 @@ Route::middleware(['fake.doctor'])->group(function() {
     Route::patch('doctor/bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
 });
 
-Route::prefix('admin')->middleware('fake.admin')->group(function () {
+Route::middleware(['auth:sanctum','role:admin'])->group(function () {
 
 
     Route::get('bookings/data', [AdminController::class,'dataBookings']);

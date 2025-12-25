@@ -12,9 +12,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googles.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="plugins/fontawesome-e/css/all.min.css">
+  <link rel="stylesheet" href={{asset("admin/plugins/fontawesome-e/css/all.min.css")}}>
+  
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href={{asset("admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css")}}>
   <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.miss">
+  <link rel="stylesheet" href={{asset("admin/dist/css/adminlte.min.css")}}>
+  
+  
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -150,7 +155,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" clasbrand-link">
+    <a href="index3.html" clasbrand-link>
       <img src={{asset("admin/dist/img/AdminLTELogo.png")}} alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">AdminLTE 3</span>
     </a>
@@ -337,7 +342,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- jQuery -->
 <script src={{asset("admin/plugins/jquery/jquery.min.js")}}></script>
 <!-- Bootstrap 4 -->
-<script src={{asset("admin/plugins/bootstrap/js/bootstrap.bundle.min.js")}}></script>
+<script src={{asset("admin/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js")}}></script>
 <!-- AdminLTE App -->
 <script src={{asset("admin/dist/js/adminlte.min.js")}}></script>
 </body>

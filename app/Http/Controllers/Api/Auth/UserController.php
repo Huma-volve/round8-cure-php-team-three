@@ -16,7 +16,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|max:255|email|unique:users',
             'password' =>'required|min:8|confirmed',
-            'mobile_number' =>'string|max:20'
+            'mobile_number' =>'required|string|max:20'
         ]);
 
         $user= User::create([
@@ -24,7 +24,6 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'mobile_number' => $request->mobile_number,
-            // 'profile_photo' => null,
         ]);
         $user->assignRole('patient');
 
@@ -42,13 +41,13 @@ class UserController extends Controller
 
    public function login(Request $request){
         $request->validate([
-        'email' => 'required|string|max:255',
+        'mobile_number' =>'required|string|max:20',
         'password' =>'required|min:8',
     ]);
-    if(!Auth::attempt($request->only('email','password'))){
-        return response()->json(['message'=>'Invalid Email or Password'], 401);
+    if(!Auth::attempt($request->only('mobile_number','password'))){
+        return response()->json(['message'=>'Invalid Phone Number or Password'], 401);
     }else{
-        $user=User::where('email',$request->email)->firstOrFail();
+        $user=User::where('mobile_number',$request->mobile_number)->firstOrFail();
         $token = $user->createToken('user_token')->plainTextToken;
         return response()->json(
             [
