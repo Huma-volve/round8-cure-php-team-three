@@ -24,7 +24,7 @@ class PasswordController extends Controller
     }
     public function reset(request $request){
      $request->validate([
-        'mobile_number'=> 'required|string|mobile_number',
+        'mobile_number'=> 'required|string',
         'password' =>'required|min:8|confirmed',
         ]);
         $user = User::where('mobile_number',$request->mobile_number)->first();
