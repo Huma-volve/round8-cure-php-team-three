@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Http\Requests\DoctorProfileRequest;
+use App\Http\Requests\DoctorProfileRequest;
 use Illuminate\Support\Facades\Auth;
 
 class DoctorProfileController extends Controller
@@ -30,7 +30,7 @@ class DoctorProfileController extends Controller
     }
        $doctor =  $user->doctor;
 
-        return view ('doctors.profile.editSlots',['doctor' => $doctor]);
+        return view ('doctors.profile.edit',['doctor' => $doctor]);
     }
 
     public function updateSlots(DoctorProfileRequest $request)

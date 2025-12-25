@@ -12,7 +12,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth','role:doctor'])->group(function(){
 Route::get('/profile/view',[DoctorProfileController::class,'profileView'])->name('profile.view');
-Route::post('/profile/editSlots',[DoctorProfileController::class,'editSlots'])->name('edit.slots');
+Route::get('/profile/editSlots',[DoctorProfileController::class,'editSlots'])->name('edit.slots');
 Route::put('/profile/updateSlots',[DoctorProfileController::class,'updateSlots'])->name('update.slots');
 });
 
