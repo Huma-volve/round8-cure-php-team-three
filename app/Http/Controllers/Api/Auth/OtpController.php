@@ -34,24 +34,37 @@ class OtpController extends Controller
            'mobile_number' =>'required|string|max:20',
             'otp'=> 'required'
         ]);
+        
         $user = User::where('mobile_number',$request->mobile_number)->first();
+        
         if(!$user){
             return response()->json([
                 'message' =>'User not found',
             ], 404); 
-        }else if($user->otp !== $request->otp){
+        }
+        
+        if($user->otp !== $request->otp){
             return response()->json([
                 'message' =>'Invalid Otp',
             ], 400); 
-        }else if(Carbon::now()->greaterThan($user->otp_expires_at)){
+        } 
+
+        if(Carbon::now()->greaterThan($user->otp_expires_at)){
             return response()->json([
                 'message' =>'Expired Otp',
             ], 400); 
-        }else{
+        }
+        
+        $user->update([
+            'mobile_verified' => true,
+            'otp' => null,
+            'otp_expires_at' => null,
+        ]);
+
             return response()->json([
                 'message' =>'Otp verified successfully',
             ], 200); 
-        }
+        
 
     }
 }

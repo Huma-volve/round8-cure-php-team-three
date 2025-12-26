@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('social_type')->nullable();
             $table->string('otp')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
+            $table->boolean('mobile_verified')->default(false);
 
 
             $table->rememberToken();

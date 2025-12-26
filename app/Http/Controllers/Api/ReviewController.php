@@ -349,4 +349,46 @@ class ReviewController extends Controller
             ], 500);
         }
     }
+
+    public function topRatedDoctors(): JsonResponse
+    {
+        try {
+            $stats = Review::select(
+                    'doctor_id',
+                    DB::raw('AVG(rating) as average_rating'),
+                    DB::raw('COUNT(*) as reviews_count')
+                )
+                ->groupBy('doctor_id')
+                ->orderByDesc('average_rating')
+                ->orderByDesc('reviews_count')
+                ->limit(8)
+                ->get();
+
+            $result = $stats->map(function ($row) {
+                $doctor = Doctor::select('id', 'name', 'specializations_id')
+                    ->with('specialization:id,name')
+                    ->find($row->doctor_id);
+
+                return [
+                    'id' => $doctor?->id,
+                    'name' => $doctor?->name,
+                    'specialization' => $doctor?->specialization->name ?? null,
+                    'average_rating' => round((float) $row->average_rating, 1),
+                    'reviews_count' => (int) $row->reviews_count,
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'تم جلب أعلى 8 أطباء حسب التقييم بنجاح',
+                'data' => $result,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء جلب أعلى الأطباء بالتقييم',
+                'error' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
+    }
 }

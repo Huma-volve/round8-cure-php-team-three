@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Enums\BookingStatus;
 use App\Models\Payment;
 use App\Repositories\Bookings\BookingsRepositories;
+use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -27,9 +29,23 @@ class PaymentWebhookController extends Controller
             if ($payment) {
                 $payment->update(['status' => 'success']);
                 $payment->booking->update(['status' => BookingStatus::Upcoming]);
-                
+
                 // حذف الموعد من المواعيد المتاحة بعد نجاح الدفع
                 $this->bookingsRepositories->deleteAppointment($payment->booking);
+                $payment->booking->update(['status' => BookingStatus::Completed]);
+
+                $doctorUser = optional($payment->booking->doctor)->user;
+                if ($doctorUser) {
+                    (new NotificationService())->sendPaymentReceivedNotification($doctorUser, [
+                        'amount' => $payment->amount,
+                        'booking_id' => $payment->booking_id,
+                    ]);
+                }
+
+                $admins = method_exists(User::class, 'role') ? User::role('admin')->get() : collect();
+                foreach ($admins as $admin) {
+                    (new NotificationService())->sendSystemAlertNotification($admin, 'Payment Succeeded', 'Payment completed for booking #'.$payment->booking_id);
+                }
             }
             return response()->json(['ok' => true]);
         }
@@ -49,6 +65,10 @@ class PaymentWebhookController extends Controller
 
                 $this->bookingsRepositories->restoreAppointment($payment->booking);
 
+                $admins = method_exists(User::class, 'role') ? User::role('admin')->get() : collect();
+                foreach ($admins as $admin) {
+                    (new NotificationService())->sendSystemAlertNotification($admin, 'Payment Failed', 'Payment failed for booking #'.$payment->booking_id);
+                }
             }
             return response()->json(['ok' => false]);
         }

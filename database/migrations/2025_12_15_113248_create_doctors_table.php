@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('specializations_id')->references('id')->on('specializations')->onUpdate('cascade')->onDelete('cascade');
             $table->string('license_number');
             $table->float('session_price');
-            $table->json('availability_slots')->nullable();
-            $table->json('clinic_location')->nullable();
+            $table->json('availability_slots')->nullable(); // انا عملتها هنا جيسون عشان نختار القيم جواها بسهولة
+            $table->json('clinic_location')->nullable();   // متنساش تروح فى المودل بتاع الدكتور وتعمل البرودكاست كاستنج للجيسون دة
             $table->timestamps();
         });
     }

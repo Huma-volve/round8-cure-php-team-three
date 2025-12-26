@@ -3,23 +3,18 @@
 This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
-<html lang="en">    
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AdminLTE 3 | Starter</title>
 
   <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googles.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href={{asset("admin/plugins/fontawesome-e/css/all.min.css")}}>
-  
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href={{asset("admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css")}}>
+  <link rel="stylesheet" href="{{ asset('Admin/plugins/fontawesome-free/css/all.min.css') }}">
   <!-- Theme style -->
-  <link rel="stylesheet" href={{asset("admin/dist/css/adminlte.min.css")}}>
-  
-  
+  <link rel="stylesheet" href="{{ asset('Admin/dist/css/adminlte.min.css') }}">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -32,7 +27,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" clasnav-link">Home</a>
+        <a href="index3.html" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
@@ -63,7 +58,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src={{asset("admin/dist/img/user1-128x128.jpg")}} alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <img src="{{ asset('Admin/dist/img/user1-128x128.jpg') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Brad Diesel
@@ -79,7 +74,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src={{asset("admin/dist/img/user8-128x128.jpg")}} alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <img src="{{ asset('Admin/dist/img/user8-128x128.jpg') }}" alt="User Avatar" class="img-size-50 img-circle mr-3">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   John Pierce
@@ -95,7 +90,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src={{asset("admin/dist/img/user3-128x128.jpg")}} alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <img src="{{ asset('Admin/dist/img/user3-128x128.jpg') }}" alt="User Avatar" class="img-size-50 img-circle mr-3">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Nora Silvester
@@ -111,31 +106,38 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
         </div>
       </li>
-      <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
+        @php
+          $currentUserId = null;
+          if (auth()->check()) {
+            $currentUserId = auth()->id();
+          } elseif (config('auth.guards.doctor') && \Illuminate\Support\Facades\Auth::guard('doctor')->check()) {
+            $currentUserId = optional(\Illuminate\Support\Facades\Auth::guard('doctor')->user())->user_id;
+          } elseif (config('auth.guards.admin') && \Illuminate\Support\Facades\Auth::guard('admin')->check()) {
+            $currentUserId = optional(\Illuminate\Support\Facades\Auth::guard('admin')->user())->user_id;
+          }
+
+          $unreadCount = $currentUserId ? (int) \App\Models\Notification::where('user_id', $currentUserId)->where('is_read', false)->count() : 0;
+          $recentNotifications = $currentUserId ? \App\Models\Notification::where('user_id', $currentUserId)->orderBy('created_at', 'desc')->limit(10)->get() : collect();
+        @endphp
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">15</span>
+          <span class="badge badge-warning navbar-badge">{{ $unreadCount }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-header">15 Notifications</span>
+          <span class="dropdown-header">{{ $unreadCount }} Notifications</span>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
-            <span class="float-right text-muted text-sm">3 mins</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 8 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 3 new reports
-            <span class="float-right text-muted text-sm">2 days</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+          @forelse($recentNotifications as $notification)
+            <a href="#" class="dropdown-item">
+              <i class="fas fa-bell mr-2"></i> {{ $notification->title }}
+              <span class="float-right text-muted text-sm">{{ optional($notification->created_at)->diffForHumans() }}</span>
+              <div class="text-sm text-muted mt-1">{{ $notification->body }}</div>
+            </a>
+            <div class="dropdown-divider"></div>
+          @empty
+            <span class="dropdown-item text-muted">لا توجد إشعارات</span>
+          @endforelse
+          <a href="#" class="dropdown-item dropdown-footer">عرض كل الإشعارات</a>
         </div>
       </li>
       <li class="nav-item">
@@ -155,8 +157,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" clasbrand-link>
-      <img src={{asset("admin/dist/img/AdminLTELogo.png")}} alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <a href="index3.html" class="brand-link">
+      <img src="{{ asset('Admin/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">AdminLTE 3</span>
     </a>
 
@@ -165,7 +167,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src={{asset("admin/dist/img/user2-160x160.jpg")}} class="img-circle elevation-2" alt="User Image">
+          <img src="{{ asset('Admin/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="#" class="d-block">Alexander Pierce</a>
@@ -340,10 +342,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src={{asset("admin/plugins/jquery/jquery.min.js")}}></script>
+<script src="{{ asset('Admin/plugins/jquery/jquery.min.js') }}"></script>
 <!-- Bootstrap 4 -->
-<script src={{asset("admin/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js")}}></script>
+<script src="{{ asset('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
-<script src={{asset("admin/dist/js/adminlte.min.js")}}></script>
+<script src="{{ asset('Admin/dist/js/adminlte.min.js') }}"></script>
 </body>
 </html>

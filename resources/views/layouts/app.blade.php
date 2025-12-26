@@ -64,24 +64,12 @@
   </aside>
 
   <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper iframe-mode" data-widget="iframe" data-loading-screen="750">
+<div class="content-wrapper iframe-mode mb-5" data-widget="iframe" data-loading-screen="750">
   
         @yield('content')
 </div>  
 
-<footer class="main-footer">
-    <strong>Copyright &copy; 2014-2020 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.1.0-rc
-    </div>
-  </footer>
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
 </div>
 <!-- jQuery -->
 <script src={{asset("admin/plugins/jquery/jquery.min.js")}}></script>
