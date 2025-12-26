@@ -21,17 +21,17 @@ class NotificationService
     }
 
 
-public function sendToDoctor($doctor, string $title, string $body)
+public function sendToDoctor(User $doctor, string $title, string $body)
 {
-    if ($doctor instanceof Doctor) {
-        $userId = $doctor->user_id;
-    }
-    else {
-        $userId = $doctor->id;
-    }
+    // if ($doctor instanceof Doctor) {
+    //     $userId = $doctor->user_id;
+    // }
+    // else {
+    //     $userId = $doctor->id;
+    // }
 
     return Notification::create([
-        'user_id' => $userId,
+        'user_id' => $doctor->id,
         'title' => $title,
         'body' => $body,
         'is_read' => false
@@ -80,7 +80,7 @@ public function sendToDoctor($doctor, string $title, string $body)
     }
 
 
-    public function sendNewBookingNotification($doctor, Booking $booking)
+    public function sendNewBookingNotification(User $doctor, Booking $booking)
     {
     return $this->sendToDoctor(
         $doctor,
@@ -178,5 +178,5 @@ public function sendNewReviewNotification($doctor, array $reviewData)
         return $this->sendBroadcastNotification($allUserIds, $title, $message);
     }
 
-    
+
 }

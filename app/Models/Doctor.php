@@ -13,9 +13,9 @@ class Doctor extends Authenticatable
 
     protected $fillable = [
         'user_id',
-        'name',
-        'email',
-        'password',
+        // 'name',
+        // 'email',
+        // 'password',
         'specializations_id',
         'mobile_number',
         'license_number',
@@ -30,7 +30,7 @@ class Doctor extends Authenticatable
         'clinic_location' => 'array'
     ];
 
-    
+
 
     public function bookings()
     {
@@ -59,14 +59,14 @@ class Doctor extends Authenticatable
 
     public function user()
     {
-        return $this->belongsTo(User::class , 'user_id');
+        return $this->belongsTo(User::class ,'user_id');
     }
 
     public function notifications()
     {
         return $this->hasMany(Notification::class);
     }
-    
+
     public function unreadNotifications()
     {
         return $this->notifications()->where('is_read', false);

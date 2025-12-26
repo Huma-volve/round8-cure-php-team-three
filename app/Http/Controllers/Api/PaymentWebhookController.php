@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Stripe\Webhook;
 
 class PaymentWebhookController extends Controller
 {
@@ -20,10 +21,23 @@ class PaymentWebhookController extends Controller
     {
         Log::info('Stripe webhook received', $request->all());
 
-        $event = $request->input('type');
-        $intent = $request->input('data.object');
+        $payload = $request->getContent();
+        $sigHeader = $request->header('Stripe-Signature');
+        $secret = config('services.stripe.webhook_secret');
+
+    try {
+        $event = Webhook::constructEvent($payload, $sigHeader, $secret);
+    } catch (\Throwable $e) {
+        return response()->json(['error' => 'Invalid signature'], 400);
+    }
+
+        // $event = $request->input('type');
+        // $intent = $request->input('data.object');
+
+        $intent = $event->data->object;
 
         if ($event === 'payment_intent.succeeded') {
+            \Log::info('Payment Intent Succeeded', $intent);
             $payment = Payment::where('transaction_id', $intent['id'])->first();
 
             if ($payment) {

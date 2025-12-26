@@ -34,10 +34,11 @@ class BookingController extends Controller
         $data['status'] = BookingStatus::Upcoming->value;
 
         $booking = Booking::create($data);
-        $booking->load(['doctor', 'user']);
+        $booking->load(['doctor']);
+
 
         (new NotificationService())->sendNewBookingNotification(
-            $booking->doctor,
+            $booking->doctor->user,
             $booking
         );
 
@@ -46,7 +47,7 @@ class BookingController extends Controller
         $payment = $this->paymentService->process($booking, $paymentMethod);
 
         return response()->json([
-            'booking' => $booking->load('paymentMethod', 'payment', 'doctor', 'user'),
+            'booking' => $booking->load(['paymentMethod', 'payment', 'user']),
             'payment' => $payment,
             'message' => 'Payment is pending',
         ]);
