@@ -13,27 +13,24 @@ class Doctor extends Authenticatable
 
     protected $fillable = [
         'user_id',
-         'name',
+        'name',
         'email',
         'password',
         'specializations_id',
-         'mobile_number',
+        'mobile_number',
         'license_number',
         'session_price',
         'availability_slots',
         'clinic_location'
     ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected $casts = [
+    protected $casts = [   // هنا عملت دة عشان انا كاتب الداتا دى فى المايجريشن جيسون
         'session_price' => 'decimal:2',
         'availability_slots' => 'array',
         'clinic_location' => 'array'
     ];
+
+    
 
     public function bookings()
     {
