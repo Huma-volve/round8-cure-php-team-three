@@ -45,12 +45,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/rateable-bookings', [ReviewController::class, 'rateableBookings']);
     Route::post('/reviews', [ReviewController::class, 'store']);
 
-    Route::get('/reviews/top-doctors', [ReviewController::class, 'topRatedDoctors']);
     Route::get('/reviews/doctor/{doctorId}', [ReviewController::class, 'doctorReviews']);
 
     Route::put('/reviews/{id}', [ReviewController::class, 'update']);
     Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
+Route::get('/reviews/top-doctors', [ReviewController::class, 'topRatedDoctors']);
 
 Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint to find nearby doctors
 Route::get('/doctors/{id}', [DoctorController::class, 'show']); // Endpoint to get doctor details by ID
