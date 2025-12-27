@@ -55,13 +55,16 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint to find nearby doctors
 Route::get('/doctors/{id}', [DoctorController::class, 'showById']); // Endpoint to get doctor details by ID
 Route::get('/doctors', [DoctorController::class, 'allDoctors']); // Endpoint to list all doctors with filters
+
+
 // ================== Auth system ============================
 Route::post('register',[UserController::class,'register']);
 Route::post('otpVerifyForRegister',[UserController::class,'otpVerifyForRegister']);
+Route::post('resendOtp',[UserController::class,'resendOtp']);
 Route::post('login',[UserController::class,'login']);
 Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum')->name('logout');
-
 Route::delete('delete',[UserController::class,'deleteAccount'])->middleware('auth:sanctum');
+
 
 //password => forget & reset
 Route::post('forget',[PasswordController::class,'forget']);
