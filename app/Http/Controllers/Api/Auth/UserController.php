@@ -17,7 +17,7 @@ class UserController extends Controller
 
             $request->validate([
     
-                'name' => ['required','string','max:255','min:10'],
+                'name' => ['required','string','max:255','min:2'],
     
                 'email' => ['required','string','max:255','email','unique:users,email'],
     
@@ -31,7 +31,7 @@ class UserController extends Controller
                         'regex:/[@$!%*?&]/',  
                     ],
     
-                'mobile_number' => ['required','string','max:11','unique:users,mobile_number']
+                'mobile_number' => ['required','string','regex:/^(\+2)?01[0-2,5][0-9]{8}$/','unique:users,mobile_number']
             ],[
 
                 'password.required' => 'Password is required.',
@@ -58,8 +58,6 @@ class UserController extends Controller
 
             Patient::create(['user_id' => $user->id]);
 
-            $token = $user->createToken('user_token')->plainTextToken;
-
             $otp = 1234;
 
             $user->update([
@@ -76,9 +74,9 @@ class UserController extends Controller
             
                 'message' =>'OTP sent to your mobile.' ,
             
-                'otp_code' => $otp ,
-
-               'token' => $token
+                'user' => $request->only([
+                    'name' ,'email' , 'password' , 'mobile_number'
+                ]),
             ], 201);
         
     }
@@ -118,6 +116,8 @@ class UserController extends Controller
                 'message' =>'Expired Otp'], 400); 
         }
 
+        $token = $user->createToken('user_token')->plainTextToken;
+
         $user->update([
             
             'mobile_verified' => true,
@@ -132,51 +132,85 @@ class UserController extends Controller
                 'message' =>'Otp verified successfully , Sign Up Successfully',
             
                 'user' =>$user->only(['id','name','email','mobile_number']),
+               
+                'token' => $token
             ], 200);
-
 
     }
 
+    public function resendOtp(Request $request)
+    {
+            $request->validate([
+
+                'mobile_number' => 'required|exists:users,mobile_number',
+            ]);
+
+            $user = User::where('mobile_number', $request->mobile_number)->first();
+
+        
+            if($user->otp_expires_at && $user->updated_at->diffInSeconds(now()) < 60){
+        
+                return response()->json([
+        
+                    'message' => 'Please wait before requesting a new OTP.',
+        
+                    'time_remaining' => 60 - $user->updated_at->diffInSeconds(now())
+                ], 429); 
+            }
+
+                $otp = 1234;
+
+                    $user->update([
+                    
+                        'otp' => $otp,
+                    
+                        'otp_expires_at' => now()->addMinutes(10),
+                    ]);
+
+                    return response()->json([
+                        
+                        'message' => 'New OTP sent successfully.',
+                        
+                        'otp_expires_at' => $user->otp_expires_at
+                    ], 200);
+    }
     public function login(Request $request)
     {
 
-        $request->validate([
+             $request->validate([
 
-        'mobile_number' =>'required|string|max:11',
-       
-        'password' =>'required|min:8',
-      ]);
-    
-    if(!Auth::attempt($request->only('mobile_number','password'))){
+                'mobile_number' =>'required|string|max:11',
+            
+                'password' =>'required|min:8',
+            ]);
+            
+            if(!Auth::attempt($request->only('mobile_number','password'))){
 
-            return response()->json(['message'=>'Invalid Phone Number or Password'], 401);
-    }
-        
-            $user=User::where('mobile_number',$request->mobile_number)->firstOrFail();
-
-            if (!$user->mobile_verified) {
-        
-                return response()->json([
-              
-                    'message' => 'Mobile number not verified. Please verify OTP first.'
-                ], 403);
+                    return response()->json(['message'=>'Invalid Phone Number or Password'], 401);
             }
+                
+             $user=User::where('mobile_number',$request->mobile_number)->firstOrFail();
 
-            $token = $user->createToken('user_token')->plainTextToken;
+                    if (!$user->mobile_verified) {
+                
+                        return response()->json([
+                    
+                            'message' => 'Mobile number not verified. Please verify OTP first.'
+                        ], 403);
+                    }
 
-            return response()->json(
-                [
-                    'message' =>'Login Successfully',
-                    
-                    'User' => $user,
-                    
-                    'Token' => $token,
-        ], 201);
-       
+                    $token = $user->createToken('user_token')->plainTextToken;
+
+                    return response()->json(
+                        [
+                            'message' =>'Login Successfully',
+                            
+                            'User' => $user,
+                            
+                            'Token' => $token,
+                ], 201);
+            
     }
-
-
-
     public function logout(Request $request)
     {
         
