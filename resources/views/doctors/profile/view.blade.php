@@ -23,15 +23,15 @@
                     <p class="form-control"><strong>Availability Slots:</strong></p>
 
                     @if(!empty($doctor->availability_slots))
-                        <ul class="form-control" type='none'>
+                        <select class="form-control" type='none'>
                             @foreach($doctor->availability_slots as $slot)
-                                <li>
-                                    <strong>Day:</strong> {{ $slot['day'] ?? '' }} |
+                                    <option>
+                                     <strong>Day:</strong> {{ $slot['day'] ?? '' }} |
                                     <strong>From:</strong> {{ $slot['from'] ?? '' }} |
                                     <strong>To:</strong> {{ $slot['to'] ?? '' }}
-                                </li>
+                                    </option>
                             @endforeach
-                        </ul>
+                        </select>
                     @else
                         <p>No slots available</p>
                     @endif

@@ -26,8 +26,6 @@ return new class extends Migration
             $table->string('otp')->nullable();
             $table->timestamp('otp_expires_at')->nullable();
             $table->boolean('mobile_verified')->default(false);
-
-
             $table->rememberToken();
             $table->timestamps();
         });

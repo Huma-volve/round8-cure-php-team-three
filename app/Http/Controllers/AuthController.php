@@ -11,8 +11,6 @@ class AuthController extends Controller
     {
         return view('auth.login'); 
     }
-
-
     public function login(LoginRequest $request)
     {
       $validation = $request->validated();
@@ -27,22 +25,21 @@ class AuthController extends Controller
         if ($user->hasRole('patient')){
      
             return view('welcome');
-     
-        }else if($user->hasRole('doctor') && $user->doctor){
+        }
+         if($user->hasRole('doctor') && $user->doctor){
      
             return redirect()->route('profile.view')->with('doctor_message','Welcome Doctor');
-     
-        }elseif($user->hasRole('admin')){
+        }
+        if($user->hasRole('admin')){
      
             return redirect()->route('home');
-        }else {
+        }
 
             Auth::logout();
             
-            return redirect()->route('login')->with('login_message', 'Your account role is invalid.');
-        }
+            return redirect()->route('login.form')->with('login_message', 'Your account role is invalid.');
+        
     }
-
     public function logout(Request $request)
     {
         Auth::logout();

@@ -19,10 +19,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
+Route::get('/profile/view',[DoctorProfileController::class,'profileView'])->name('profile.view');
+Route::get('/profile/editSlots',[DoctorProfileController::class,'editSlots'])->name('edit.slots');
+Route::put('/profile/updateSlots',[DoctorProfileController::class,'updateSlots'])->name('update.slots');
+
 Route::middleware(['auth','role:doctor'])->prefix('doctor')->group(function () {
-    Route::get('/profile/view',[DoctorProfileController::class,'profileView'])->name('profile.view');
-    Route::get('/profile/editSlots',[DoctorProfileController::class,'editSlots'])->name('edit.slots');
-    Route::put('/profile/updateSlots',[DoctorProfileController::class,'updateSlots'])->name('update.slots');
     Route::view('bookings', 'doctor.bookings.index')->name('doctor.bookings');
 });
 
