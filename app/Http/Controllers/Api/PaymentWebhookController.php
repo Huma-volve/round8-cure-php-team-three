@@ -21,20 +21,20 @@ class PaymentWebhookController extends Controller
     {
         Log::info('Stripe webhook received', $request->all());
 
-        $payload = $request->getContent();
-        $sigHeader = $request->header('Stripe-Signature');
-        $secret = config('services.stripe.webhook_secret');
+    //     $payload = $request->getContent();
+    //     $sigHeader = $request->header('Stripe-Signature');
+    //     $secret = config('services.stripe.webhook_secret');
 
-    try {
-        $event = Webhook::constructEvent($payload, $sigHeader, $secret);
-    } catch (\Throwable $e) {
-        return response()->json(['error' => 'Invalid signature'], 400);
-    }
+    // try {
+    //     $event = Webhook::constructEvent($payload, $sigHeader, $secret);
+    // } catch (\Throwable $e) {
+    //     return response()->json(['error' => 'Invalid signature'], 400);
+    // }
 
-        // $event = $request->input('type');
-        // $intent = $request->input('data.object');
+        $event = $request->input('type');
+        $intent = $request->input('data.object');
 
-        $intent = $event->data->object;
+        // $intent = $event->data->object;
 
         if ($event === 'payment_intent.succeeded') {
             \Log::info('Payment Intent Succeeded', $intent);
@@ -44,7 +44,6 @@ class PaymentWebhookController extends Controller
                 $payment->update(['status' => 'success']);
                 $payment->booking->update(['status' => BookingStatus::Upcoming]);
 
-                // حذف الموعد من المواعيد المتاحة بعد نجاح الدفع
                 $this->bookingsRepositories->deleteAppointment($payment->booking);
                 $payment->booking->update(['status' => BookingStatus::Completed]);
 
