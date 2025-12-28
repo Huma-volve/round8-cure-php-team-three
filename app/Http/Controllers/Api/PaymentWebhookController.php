@@ -41,11 +41,14 @@ class PaymentWebhookController extends Controller
             $payment = Payment::where('transaction_id', $intent['id'])->first();
 
             if ($payment) {
-                $payment->update(['status' => 'success']);
+                $payment->update([
+                    'status' => 'success',
+                    'response' => $intent
+                ]);
                 $payment->booking->update(['status' => BookingStatus::Upcoming]);
 
-                $this->bookingsRepositories->deleteAppointment($payment->booking);
-                $payment->booking->update(['status' => BookingStatus::Completed]);
+                // $this->bookingsRepositories->deleteAppointment($payment->booking);
+                // $payment->booking->update(['status' => BookingStatus::Completed]);
 
                 $doctorUser = optional($payment->booking->doctor)->user;
                 if ($doctorUser) {
@@ -60,7 +63,12 @@ class PaymentWebhookController extends Controller
                     (new NotificationService())->sendSystemAlertNotification($admin, 'Payment Succeeded', 'Payment completed for booking #'.$payment->booking_id);
                 }
             }
-            return response()->json(['ok' => true]);
+            return response()->json([
+                'ok' => true,
+                'message' => 'Payment completed successfully',
+                'payment' => $payment,
+                'booking' => $payment->booking,
+            ]);
         }
 
         if ($event === 'payment_intent.payment_failed') {
