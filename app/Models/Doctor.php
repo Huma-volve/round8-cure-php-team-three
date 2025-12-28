@@ -13,15 +13,12 @@ class Doctor extends Authenticatable
 
     protected $fillable = [
         'user_id',
-        //  'name',
-        // 'email',
-        // 'password',
         'specializations_id',
-        //  'mobile_number',
         'license_number',
         'session_price',
         'availability_slots',
-        'clinic_location'
+        'clinic_location',
+        'about_me',
     ];
 
     protected $casts = [   // هنا عملت دة عشان انا كاتب الداتا دى فى المايجريشن جيسون

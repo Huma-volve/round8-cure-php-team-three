@@ -23,13 +23,21 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+
+        $images = [
+            'https://www.pinterest.com/pin/28499410136129535/',
+            'https://www.pinterest.com/pin/2955555999732146/',
+        ];
+
         return [
-           'name' => 'Dr. ' . $this->faker->name(),
+            'name' => 'Dr. ' . $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'mobile_number' => $this->faker->unique()->numerify('01#########'),
+            'profile_photo' => $this->faker->randomElement($images),
             'remember_token' => Str::random(10),
+
         ];
     }
 
@@ -38,7 +46,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
