@@ -81,7 +81,7 @@ Route::get('auth/google/callback',[SocialiteController::class,'handleGoogleCallb
 //patient profile
 Route::middleware(['auth:sanctum'])->group(function() {
 Route::get('/patient/profile/show',[PatientProfileController::class ,'show']);
-Route::put('/patient/profile/update',[PatientProfileController::class ,'update']);
+Route::post('/patient/profile/update',[PatientProfileController::class ,'update']);
 Route::put('/patient/profile/changePassword', [PatientProfileController::class, 'changePassword']);
 Route::post('patient/bookings',[BookingController::class,'store']);
 Route::get('/patient/reviews/top-doctors', [ReviewController::class, 'topRatedDoctors']);
