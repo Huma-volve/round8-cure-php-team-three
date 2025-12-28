@@ -14,47 +14,104 @@ class PatientProfileController extends Controller
 
     $user = auth()->user();
 
+    $user->profile_photo_url = $user->profile_photo
+    
+    ? asset('storage/images/patient/' . $user->profile_photo)
+    
+    : null;
+
     $data = [
+        
         'message' =>'Patient Profile fetched successfully',
+        
         'user' =>$user,
+        
         'patient' =>$user->patient,
     
     ];
 
     return response()->json($data, 200);
-} 
+   }   
 
    public function update(Request $request){
+   
     $user = auth()->user();
 
     $validation = Validator::make($request->all(),[
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,' . $user->id,
-            'mobile_number' =>'string|max:20',
-            'birth_date' =>'nullable|date',
+           
+        'name' => 'sometimes|string|max:255',
         
+        'email' => 'sometimes|email|unique:users,email,' . $user->id,
+        
+        'mobile_number' =>'string|max:20',
+        
+        'birth_date' =>'nullable|date',
+        
+        'location' =>'nullable',
+        
+        'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);
 
     if ($validation->fails()){
+        
         return response()->json([
+        
             'errors' => $validation->errors(),
         ],422);
     };
 
-    $user->update(
+    $location = null;
 
-        $request->only([
-        'name',
-        'email',
-        'mobile_number',
-        'birth_date',
+        if ($request->has('location')) {
+
+            if (is_string($request->location)) {
+            
+                $location = json_decode($request->location, true);
+                
+            } elseif (is_array($request->location)) {
+               
+                $location = $request->location;
+            }
+        }
+
+        $user->update(
+
+            $request->only([
+            'name',
+            'email',
+            'mobile_number',
+            'birth_date',  
+            'location',  
+        ])
+        );
+
+    if ($request->hasFile('profile_photo')) {
        
-    ])
-    );
+        $image = $request->file('profile_photo');
+       
+        $imageName = time() . '_' . $image->getClientOriginalName();
+       
+        $image->storeAs('public/images/patient', $imageName);
+        
+        $user->update([
+            
+            'profile_photo' => $imageName,
+            
+        ]);
+    } 
 
+         $user->profile_photo_url = $user->profile_photo
+          
+         ? asset('storage/images/patient/' . $user->profile_photo)
+         
+         : null;
+    
     $data = [
+    
         'message' =>'Patient Profile Updated successfully',
+    
         'user' =>$user,
+    
         'patient' =>$user->patient,
 
     ];

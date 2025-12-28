@@ -27,7 +27,7 @@
                                         <input type="text"
                                                name="availability_slots[{{ $index }}][day]"
                                                class="form-control"
-                                               value="{{ $slot['day'] }}">
+                                               value="{{ $slot['day'] ?? '' }}">
                                     </div>
 
                                     <div class="form-group">
@@ -35,7 +35,7 @@
                                         <input type="time"
                                                name="availability_slots[{{ $index }}][from]"
                                                class="form-control"
-                                               value="{{ $slot['from'] }}">
+                                               value="{{ $slot['from'] ?? '' }}">
                                     </div>
 
                                     <div class="form-group">
@@ -43,7 +43,7 @@
                                         <input type="time"
                                                name="availability_slots[{{ $index }}][to]"
                                                class="form-control"
-                                               value="{{ $slot['to'] }}">
+                                               value="{{ $slot['to'] ?? ''}}">
                                     </div>
                                 </div>
                             @endforeach

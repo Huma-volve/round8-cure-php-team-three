@@ -55,13 +55,16 @@ Route::get('/reviews/top-doctors', [ReviewController::class, 'topRatedDoctors'])
 Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint to find nearby doctors
 Route::get('/doctors/{id}', [DoctorController::class, 'showById']); // Endpoint to get doctor details by ID
 Route::get('/doctors', [DoctorController::class, 'allDoctors']); // Endpoint to list all doctors with filters
+
+
 // ================== Auth system ============================
 Route::post('register',[UserController::class,'register']);
 Route::post('otpVerifyForRegister',[UserController::class,'otpVerifyForRegister']);
+Route::post('resendOtp',[UserController::class,'resendOtp']);
 Route::post('login',[UserController::class,'login']);
 Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum')->name('logout');
-
 Route::delete('delete',[UserController::class,'deleteAccount'])->middleware('auth:sanctum');
+
 
 //password => forget & reset
 Route::post('forget',[PasswordController::class,'forget']);
@@ -78,7 +81,7 @@ Route::get('auth/google/callback',[SocialiteController::class,'handleGoogleCallb
 //patient profile
 Route::middleware(['auth:sanctum'])->group(function() {
 Route::get('/patient/profile/show',[PatientProfileController::class ,'show']);
-Route::put('/patient/profile/update',[PatientProfileController::class ,'update']);
+Route::post('/patient/profile/update',[PatientProfileController::class ,'update']);
 Route::put('/patient/profile/changePassword', [PatientProfileController::class, 'changePassword']);
 Route::post('patient/bookings',[BookingController::class,'store']);
 Route::get('/patient/reviews/top-doctors', [ReviewController::class, 'topRatedDoctors']);
