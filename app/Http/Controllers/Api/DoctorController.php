@@ -9,27 +9,6 @@ use Illuminate\Support\Facades\Hash;
 
 class DoctorController extends Controller
 {
-    public function show($id)
-    {
-        $doctor = Doctor::with('specialization')->find($id);
-
-        if (!$doctor) {
-            return response()->json(['message' => 'Doctor not found'], 404);
-        }
-        $data = [
-            'id' => $doctor->id,
-            'name' => $doctor->name,
-            'email' => $doctor->email,
-            'mobile_number' => $doctor->mobile_number,
-            'license_number' => $doctor->license_number,
-            'session_price' => $doctor->session_price,
-            'specialization' => $doctor->specialization ? $doctor->specialization->name : null,
-            'availability_slots' => $doctor->availability_slots,
-            'clinic_location' => $doctor->clinic_location,
-        ];
-        return response()->json($data);
-    }
-
     // هتجيب الدكاترة الاقرب لموقع معين
     public function nearby(Request $request)
     {
@@ -43,83 +22,104 @@ class DoctorController extends Controller
 
         $doctors = Doctor::with(['user', 'specialization'])
             ->select('*')
-            ->selectRaw('
-            (6371 * acos(
+            ->selectRaw(
+                '(6371 * acos(
                 cos(radians(?)) 
                 * cos(radians(JSON_EXTRACT(clinic_location, "$.lat"))) 
                 * cos(radians(JSON_EXTRACT(clinic_location, "$.lng")) - radians(?)) 
                 + sin(radians(?)) 
                 * sin(radians(JSON_EXTRACT(clinic_location, "$.lat")))
-            )) AS distance
-        ', [$lat, $lng, $lat])
+            )) AS distance',
+                [$lat, $lng, $lat]
+            )
             ->orderBy('distance', 'asc')
-            ->get();
+            ->paginate(3); // pagination
 
-
-        // Format response
-        $data = $doctors->map(function ($doctor) {
+        $data = $doctors->getCollection()->map(function ($doctor) {
             return [
                 'id' => $doctor->id,
                 'user' => [
                     'name' => $doctor->user->name,
                     'email' => $doctor->user->email,
+                    'profile_photo' => $doctor->user->profile_photo,
                 ],
-                'specialization' => $doctor->specialization ? $doctor->specialization->name : null,
+                'specialization' => $doctor->specialization?->name,
                 'session_price' => $doctor->session_price,
                 'availability_slots' => $doctor->availability_slots,
                 'clinic_location' => $doctor->clinic_location,
+                'about_me' => $doctor->about_me,
+                'distance_km' => round($doctor->distance, 2),
+                'reviews_count' => $doctor->reviews()->count(),
+                'average_rating' => $doctor->averageRating(),
+                'patients_count' => $doctor->bookings()->distinct('user_id')->count(),
             ];
         });
 
-        return response()->json($data);
+        return response()->json([
+            'current_page' => $doctors->currentPage(),
+            'total_pages' => $doctors->lastPage(),
+            'total_items' => $doctors->total(),
+            'data' => $data,
+        ]);
     }
 
 
     // Show doctor by ID with user and specialization details
     public function showById($id)
-{
-    $doctor = Doctor::with(['user', 'specialization'])->find($id);
+    {
+        $doctor = Doctor::with(['user', 'specialization', 'reviews'])->find($id);
 
-    if (!$doctor) {
-        return response()->json(['message' => 'Doctor not found'], 404);
-    }
+        if (!$doctor) {
+            return response()->json([
+                'message' => 'Doctor not found'
+            ], 404);
+        }
 
-    $data = [
-        'id' => $doctor->id,
-        'user' => [
-            'name' => $doctor->user->name,
-            'email' => $doctor->user->email,
-        ],
-        'specialization' => $doctor->specialization ? $doctor->specialization->name : null,
-        'session_price' => $doctor->session_price,
-        'availability_slots' => $doctor->availability_slots,
-        'clinic_location' => $doctor->clinic_location,
-    ];
-
-    return response()->json($data);
-}
-
-    // List all doctors with user and specialization details
-public function allDoctors()
-{
-    $doctors = Doctor::with(['user', 'specialization'])->get();
-
-    $data = $doctors->map(function($doctor) {
-        return [
+        $data = [
             'id' => $doctor->id,
             'user' => [
                 'name' => $doctor->user->name,
                 'email' => $doctor->user->email,
+                'profile_photo' => $doctor->user->profile_photo,
             ],
-            'specialization' => $doctor->specialization ? $doctor->specialization->name : null,
+            'specialization' => $doctor->specialization?->name,
             'session_price' => $doctor->session_price,
             'availability_slots' => $doctor->availability_slots,
             'clinic_location' => $doctor->clinic_location,
+            'about_me' => $doctor->about_me,
+            'reviews_count' => $doctor->reviews()->count(),
+            'average_rating' => $doctor->averageRating(),
+            'patients_count' => $doctor->bookings()->distinct('user_id')->count(),
         ];
-    });
 
-    return response()->json($data);
-}
+        return response()->json($data);
+    }
 
 
+    // List all doctors with user and specialization details
+    public function allDoctors()
+    {
+        $doctors = Doctor::with(['user', 'specialization', 'reviews'])->paginate(3);
+
+        $doctors->getCollection()->transform(function ($doctor) {
+            return [
+                'id' => $doctor->id,
+                'user' => [
+                    'name' => $doctor->user->name,
+                    'email' => $doctor->user->email,
+                    'profile_photo' => $doctor->user->profile_photo,
+                ],
+                'specialization' => $doctor->specialization?->name,
+                'session_price' => $doctor->session_price,
+                'availability_slots' => $doctor->availability_slots,
+                'clinic_location' => $doctor->clinic_location,
+                'about_me' => $doctor->about_me,
+                'reviews_count' => $doctor->reviews()->count(),
+                'average_rating' => $doctor->averageRating(),
+                'patients_count' => $doctor->bookings()->distinct('user_id')->count(),
+            ];
+        });
+
+        return response()->json($doctors);
+    }
 }
