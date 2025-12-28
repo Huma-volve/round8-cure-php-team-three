@@ -360,6 +360,7 @@ class ReviewController extends Controller
                     'doctors.id',
                     'users.name', // Get name from users table
                     'users.email', // Optionally get other user details
+                    'users.profile_photo',
                     'doctors.clinic_location',
                     'doctors.session_price',
                     'doctors.availability_slots',
@@ -367,7 +368,7 @@ class ReviewController extends Controller
                     DB::raw('COUNT(reviews.id) as reviews_count'),
                     DB::raw('COALESCE(specializations.name, NULL) as specialization')
                 )
-                ->groupBy('doctors.id', 'users.name', 'users.email', 'specializations.name', 'doctors.clinic_location', 'doctors.session_price', 'doctors.availability_slots')
+                ->groupBy('doctors.id', 'users.name', 'users.email', 'users.profile_photo', 'specializations.name', 'doctors.clinic_location', 'doctors.session_price', 'doctors.availability_slots')
                 ->orderByDesc(DB::raw('COALESCE(AVG(reviews.rating), 0)'))
                 ->orderByDesc(DB::raw('COUNT(reviews.id)'))
                 ->limit(8)
@@ -377,6 +378,7 @@ class ReviewController extends Controller
                 return [
                     'id' => (int) $row->id,
                     'name' => $row->name,
+                    'profile_photo' => $row->profile_photo,
                     'specialization' => $row->specialization,
                     'clinic_location' => is_string($row->clinic_location) ? json_decode($row->clinic_location, true) : $row->clinic_location,
                     'session_price' => (float) $row->session_price,
