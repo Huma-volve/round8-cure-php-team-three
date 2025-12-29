@@ -206,8 +206,12 @@ class UserController extends Controller
                             'Status' => true,
 
                             'message' =>'Login Successfully',
+
+                            'data' => [
+                                
+                                'Token' => $token,
+                            ]
                             
-                            'Token' => $token,
                 ], 201);
             
     }
