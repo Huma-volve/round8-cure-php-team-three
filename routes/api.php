@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Api\FavouriteController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\BookingController;
@@ -89,6 +90,9 @@ Route::get('/patient/reviews/doctor/{doctorId}', [ReviewController::class, 'doct
 Route::get('patient/all-bookings',[BookingController::class,'getBookingsUser']);
 Route::post('patient/bookings/{booking}/cancel',[BookingController::class,'cancelByPatient']);
 Route::post('patient/bookings/{booking}/reschedule',[BookingController::class,'rescheduleByPatient']);
+Route::post('addOrRemove-favourite/{doctorId}', [FavouriteController::class, 'addOrRemoveFavourite']);
+Route::get('all-favourites', [FavouriteController::class, 'listFavourites']);
+Route::get('show_favorite/{id}', [FavouriteController::class, 'showFavourite']);
 });
 
 Route::get('payment-methods', [BookingController::class, 'getPaymentMethods']);

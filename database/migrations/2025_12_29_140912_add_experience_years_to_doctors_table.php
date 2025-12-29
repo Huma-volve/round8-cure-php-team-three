@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('doctors', function (Blueprint $table) {
-            $table->unsignedTinyInteger('experience_years')->after('specializations_id');
+                $table->unsignedTinyInteger('experience_years')->default(1)->after('specializations_id');
         });
 
         // Add CHECK constraint to ensure experience_years is between 1 and 30
