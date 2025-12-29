@@ -12,12 +12,12 @@ class DoctorProfileController extends Controller
     {
         $user = Auth::user();
 
-          if (!$user->hasRole('doctor') || !$user->doctor) {
+          if (!$user || !$user->hasRole('doctor') || !$user->doctor) {
         
             Auth::logout();
         
             return redirect()->route('login.form')->with('login_message', 'Please login as a doctor');
-    }
+     }
 
        $doctor =  $user->doctor;
 
@@ -28,7 +28,7 @@ class DoctorProfileController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user->hasRole('doctor') || !$user->doctor) {
+        if (!$user || !$user->hasRole('doctor') || !$user->doctor) {
             
             Auth::logout();
             
@@ -39,12 +39,11 @@ class DoctorProfileController extends Controller
 
        return view ('doctors.profile.edit',['doctor' => $doctor]);
     }
-
     public function updateSlots(DoctorProfileRequest $request)
     {
           $user = Auth::user();
 
-            if (!$user->hasRole('doctor') || !$user->doctor) {
+            if (!$user || !$user->hasRole('doctor') || !$user->doctor) {
         
             Auth::logout();
         

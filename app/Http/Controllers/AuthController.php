@@ -11,40 +11,63 @@ class AuthController extends Controller
     {
         return view('auth.login'); 
     }
+
     public function login(LoginRequest $request)
     {
-      $validation = $request->validated();
 
-        if(!Auth::attempt($validation)){
+    $validation = $request->validated();
 
-            return redirect()->route('login.form')->with('login_message','Invalid Email Or Password');
-        }
-     
-        $user = Auth::user();
-     
-        if ($user->hasRole('patient')){
-     
-            return view('welcome');
-        }
-         if($user->hasRole('doctor') && $user->doctor){
-     
-            return redirect()->route('profile.view')->with('doctor_message','Welcome Doctor');
-        }
-        if($user->hasRole('admin')){
-     
-            return redirect()->route('home');
-        }
-
-            Auth::logout();
-            
-            return redirect()->route('login.form')->with('login_message', 'Your account role is invalid.');
-        
+   
+    if (!Auth::attempt($validation)) {
+        return redirect()
+            ->route('login.form')
+            ->with('login_message', 'Invalid email or password');
     }
+
+    
+    $request->session()->regenerate();
+
+    $user = Auth::user();
+
+    if(!$user){
+          return redirect()
+            ->route('login.form')
+            ->with('login_message', 'Login First');
+    }
+
+    if ($user->hasRole('patient')) {
+        return redirect()->route('welcome');
+    }
+
+    if ($user->hasRole('doctor')) {
+        return redirect()
+            ->route('profile.view')
+            ->with('doctor_message', 'Welcome Doctor');
+    }
+
+    if ($user->hasRole('admin')) {
+        return redirect()
+            ->route('home')
+            ->with('admin_message', 'Welcome Admin');
+    }
+
+  
+    Auth::logout();
+
+    return redirect()
+        ->route('login.form')
+        ->with('login_message', 'Your account role is invalid.');
+}
+
     public function logout(Request $request)
     {
         Auth::logout();
+
+         $request->session()->invalidate();
+
+          $request->session()->regenerateToken();
         
-        return redirect()->route('login');
+        return redirect()->route('login.form');
 
        }
 }

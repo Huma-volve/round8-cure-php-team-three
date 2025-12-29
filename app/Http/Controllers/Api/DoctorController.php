@@ -33,7 +33,7 @@ class DoctorController extends Controller
                 [$lat, $lng, $lat]
             )
             ->orderBy('distance', 'asc')
-            ->paginate(3); // pagination
+            ->paginate(9); // pagination
 
         $data = $doctors->getCollection()->map(function ($doctor) {
             return [
@@ -43,7 +43,11 @@ class DoctorController extends Controller
                     'email' => $doctor->user->email,
                     'profile_photo' => $doctor->user->profile_photo,
                 ],
-                'specialization' => $doctor->specialization?->name,
+                 'specialization' => $doctor->specialization ? [
+                    'id'    => $doctor->specialization->id,
+                    'name'  => $doctor->specialization->name,
+                    'image' => $doctor->specialization->image, // nullable
+                ] : null,
                 'session_price' => $doctor->session_price,
                 'availability_slots' => $doctor->availability_slots,
                 'clinic_location' => $doctor->clinic_location,
@@ -82,7 +86,11 @@ class DoctorController extends Controller
                 'email' => $doctor->user->email,
                 'profile_photo' => $doctor->user->profile_photo,
             ],
-            'specialization' => $doctor->specialization?->name,
+             'specialization' => $doctor->specialization ? [
+                    'id'    => $doctor->specialization->id,
+                    'name'  => $doctor->specialization->name,
+                    'image' => $doctor->specialization->image, // nullable
+                ] : null,
             'session_price' => $doctor->session_price,
             'availability_slots' => $doctor->availability_slots,
             'clinic_location' => $doctor->clinic_location,
@@ -100,7 +108,7 @@ class DoctorController extends Controller
     // List all doctors with user and specialization details
     public function allDoctors()
     {
-        $doctors = Doctor::with(['user', 'specialization', 'reviews'])->paginate(3);
+        $doctors = Doctor::with(['user', 'specialization', 'reviews'])->paginate(9);
 
         $doctors->getCollection()->transform(function ($doctor) {
             return [
@@ -110,7 +118,11 @@ class DoctorController extends Controller
                     'email' => $doctor->user->email,
                     'profile_photo' => $doctor->user->profile_photo,
                 ],
-                'specialization' => $doctor->specialization?->name,
+                'specialization' => $doctor->specialization ? [
+                    'id'    => $doctor->specialization->id,
+                    'name'  => $doctor->specialization->name,
+                    'image' => $doctor->specialization->image, // nullable
+                ] : null,
                 'session_price' => $doctor->session_price,
                 'availability_slots' => $doctor->availability_slots,
                 'clinic_location' => $doctor->clinic_location,

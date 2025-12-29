@@ -105,4 +105,13 @@ class ResourceDoctorController extends Controller
 
         return redirect()->route('doctors.index')->with('doctor_message','Deleted Successfully');
     }
+
+    public function assignHelpers(string $id)
+    {
+        $doctor = Doctor::findOrFail($id);
+
+       
+        
+        return view('admin.assignHelpers');
+    }
 }

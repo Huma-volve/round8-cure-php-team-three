@@ -99,4 +99,9 @@ class User extends Authenticatable
     {
         return $this->favourites()->where('doctor_id',$id)->exists();
     }
+    public function doctors()
+{
+    return $this->belongsToMany(Doctor::class, 'doctor_helper', 'helper_id', 'doctor_id');
+}
+
 }

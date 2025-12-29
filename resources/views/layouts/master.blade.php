@@ -56,6 +56,11 @@
       </div>
     </form>
 
+     <form action={{route('logout')}} class="ml-5" method="post">
+          @csrf
+          <button type="submit" class="btn btn-outline-danger ml-5" >Logout</button>
+        </form>
+
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Messages Dropdown Menu -->

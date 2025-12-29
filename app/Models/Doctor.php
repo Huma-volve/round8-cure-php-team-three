@@ -73,4 +73,11 @@ class Doctor extends Authenticatable
     {
         return $this->hasMany(Favourite::class, 'doctor_id');
     }
+
+    public function helpers()
+    {
+        return $this->belongsToMany(User::class, 'doctor_helper', 'doctor_id', 'helper_id');
+    }
+
+
 }

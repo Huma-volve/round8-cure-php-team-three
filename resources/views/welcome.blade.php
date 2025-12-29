@@ -35,7 +35,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </ul>
 
     <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
+    <form class="form-inline ml-3 mr-5">
       <div class="input-group input-group-sm">
         <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
@@ -46,6 +46,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </div>
     </form>
 
+      <form action={{route('logout')}} class="float-right mr-5" method="post">
+          @csrf
+          <button type="submit" class="btn btn-outline-danger mr-5" >Logout</button>
+        </form>
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Messages Dropdown Menu -->

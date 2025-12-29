@@ -85,24 +85,18 @@ class PatientProfileController extends Controller
         ])
         );
 
-    if ($request->hasFile('profile_photo')) {
-       
-        $image = $request->file('profile_photo');
-       
-        $imageName = time() . '_' . $image->getClientOriginalName();
-       
-        $image->storeAs('public/images/patient', $imageName);
-        
-        $user->update([
-            
-            'profile_photo' => $imageName,
-            
-        ]);
-    } 
+        if ($request->hasFile('profile_photo')) {
+    
+        $path = $request->file('profile_photo')->store('images/patients', 'public');
+    
+        $user->profile_photo = basename($path);
+
+        $user->save();
+    }
 
          $user->profile_photo_url = $user->profile_photo
           
-         ? asset('storage/images/patient/' . $user->profile_photo)
+         ? asset('storage/images/patients/' . $user->profile_photo)
          
          : null;
     

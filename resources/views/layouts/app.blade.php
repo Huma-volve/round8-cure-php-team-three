@@ -17,13 +17,16 @@
 <body>    
 
 <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+  <nav class="main-header navbar  navbar-white navbar-light">
     <!-- Left navbar links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        Doctor Dashboard
-      </li>
-    </ul>
+         <h4 class="float-left">
+          Doctor Dashboard
+        </h4>
+        <form action={{route('logout')}} class="float-right mr-5" method="post">
+          @csrf
+          <button type="submit" class="btn btn-outline-danger mr-5" >Logout</button>
+        </form>
+
   </nav>
   <!-- /.navbar -->
 

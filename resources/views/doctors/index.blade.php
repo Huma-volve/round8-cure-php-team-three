@@ -38,8 +38,9 @@
                                             <form action={{route('doctors.destroy',$item->id)}} method="post" enctype="multipart/form-data">
                                                 @csrf
                                                 @method('delete')
-                                                    <button class="btn btn-danger ml-2">delete</button>
+                                                <button class="btn btn-danger ml-2 mr-2">delete</button>
                                             </form>
+                                            {{-- <a href={{route('assign.helpers',$item->id)}} class="btn btn-info mr-l">Assign Helpers</a> --}}
                                         </td>
                                     </tr>
                                     @endforeach
