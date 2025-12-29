@@ -8,19 +8,13 @@ use App\Http\Controllers\ResourceDoctorController;
 use App\Http\Controllers\DoctorProfileController;
 
 Route::middleware('auth')->group(function () {
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', function (){return view('welcome');})->name('welcome');
 });
 
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
-});
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-});
 
 Route::middleware(['auth','role:doctor'])->prefix('doctor')->group(function () {
     Route::view('bookings', 'doctor.bookings.index')->name('doctor.bookings');

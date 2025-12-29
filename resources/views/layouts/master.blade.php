@@ -56,9 +56,9 @@
       </div>
     </form>
 
-     <form action={{route('logout')}} class="ml-5" method="post">
+     <form action="{{route('logout')}}" method="POST" class="ml-5" enctype="multipart/form-data">
           @csrf
-          <button type="submit" class="btn btn-outline-danger ml-5" >Logout</button>
+          <input type="submit" class="btn btn-outline-danger ml-5"  value="Logout">
         </form>
 
         <a href={{route('helper.create')}} class="btn btn-outline-dark ml-5">Assign Helpers</a>

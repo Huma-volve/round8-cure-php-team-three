@@ -16,38 +16,38 @@ class AuthController extends Controller
     {
 
     $validation = $request->validated();
-
    
     if (!Auth::attempt($validation)) {
+
         return redirect()
             ->route('login.form')
             ->with('login_message', 'Invalid email or password');
     }
 
-    
     $request->session()->regenerate();
 
     $user = Auth::user();
 
     if(!$user){
-          return redirect()
-            ->route('login.form')
+     
+        return $this->redirectWithNoCache
             ->with('login_message', 'Login First');
     }
 
     if ($user->hasRole('patient')) {
-        return redirect()->route('welcome');
+     
+        return $this->redirectWithNoCache('welcome');
     }
 
     if ($user->hasRole('doctor')) {
-        return redirect()
-            ->route('profile.view')
+     
+        return $this->redirectWithNoCache
             ->with('doctor_message', 'Welcome Doctor');
     }
 
     if ($user->hasRole('admin') || $user->hasRole('helper') ) {
-        return redirect()
-            ->route('home')
+     
+        return $this->redirectWithNoCache
             ->with('admin_message', 'Welcome Admin');
     }
 
@@ -67,7 +67,7 @@ class AuthController extends Controller
 
           $request->session()->regenerateToken();
         
-        return redirect()->route('login.form');
+        return $this->redirectWithNoCache('login.form');
 
        }
 }

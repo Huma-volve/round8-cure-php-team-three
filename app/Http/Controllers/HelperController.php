@@ -32,7 +32,7 @@ class HelperController extends Controller
                 'exists:users,id',
                 'unique:helpers,user_id'
             ],
-        ]);
+        ]);;
 
         Helper::create($validation);
 

@@ -16,7 +16,7 @@ class PatientProfileController extends Controller
 
     $user->profile_photo_url = $user->profile_photo
     
-    ? asset('storage/images/patient/' . $user->profile_photo)
+    ? asset('storage/images/patients/' . $user->profile_photo)
     
     : null;
 
