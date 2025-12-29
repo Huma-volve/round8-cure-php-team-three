@@ -11,7 +11,8 @@ class Specialization extends Model
 
     protected $fillable = [
         'id',
-        'name'
+        'name',
+        'image',
     ];
 
     public function doctors(){
