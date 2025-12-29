@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Dashboard\AdminNotificationController;
 use App\Http\Controllers\Dashboard\DoctorNotificationController;
 use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\DoctorFilterController;
 use App\Http\Controllers\Api\PaymentWebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,7 +23,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// notifications user 
+//! ================== Notifications User ============================
 Route::middleware('auth:sanctum')->group(function () {
     // Notification Routes
     Route::get('/notifications', [NotificationController::class, 'index']);
@@ -38,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-// reviews 
+//! ================== Reviews ============================
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/my-reviews', [ReviewController::class, 'myReviews']);
@@ -53,11 +54,12 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('/reviews/top-doctors', [ReviewController::class, 'topRatedDoctors']);
 
 Route::get('/doctors/nearby', [DoctorController::class, 'nearby']); // Endpoint to find nearby doctors
+Route::get('/doctors/filter', [DoctorFilterController::class, 'filter']); // Endpoint to filter doctors
+Route::get('/doctors/search', [DoctorFilterController::class, 'search']); // Endpoint to search doctors
 Route::get('/doctors/{id}', [DoctorController::class, 'showById']); // Endpoint to get doctor details by ID
 Route::get('/doctors', [DoctorController::class, 'allDoctors']); // Endpoint to list all doctors with filters
 
-
-// ================== Auth system ============================
+//! ================== Auth system ============================
 Route::post('register',[UserController::class,'register']);
 Route::post('otpVerifyForRegister',[UserController::class,'otpVerifyForRegister']);
 Route::post('resendOtp',[UserController::class,'resendOtp']);
