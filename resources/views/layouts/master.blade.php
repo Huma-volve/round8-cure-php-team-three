@@ -61,6 +61,8 @@
           <button type="submit" class="btn btn-outline-danger ml-5" >Logout</button>
         </form>
 
+        <a href={{route('helper.create')}} class="btn btn-outline-dark ml-5">Assign Helpers</a>
+
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Messages Dropdown Menu -->

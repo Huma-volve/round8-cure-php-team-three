@@ -45,7 +45,7 @@ class AuthController extends Controller
             ->with('doctor_message', 'Welcome Doctor');
     }
 
-    if ($user->hasRole('admin')) {
+    if ($user->hasRole('admin') || $user->hasRole('helper') ) {
         return redirect()
             ->route('home')
             ->with('admin_message', 'Welcome Admin');

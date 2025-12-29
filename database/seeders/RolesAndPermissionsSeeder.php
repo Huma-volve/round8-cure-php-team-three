@@ -25,11 +25,12 @@ class RolesAndPermissionsSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $doctorRole = Role::firstOrCreate(['name' => 'doctor']);
         $patientRole = Role::firstOrCreate(['name' => 'patient']);
-        // $helperRole = Role::firstOrCreate(['name' => 'helper']);
+        $helperRole = Role::firstOrCreate(['name' => 'helper']);
 
         // Assign Permissions to Roles 
         $adminRole->givePermissionTo(['manage users', 'manage doctors', 'manage patients']);
         $doctorRole->givePermissionTo(['manage patients']);
+        $helperRole->givePermissionTo(['manage patients','manage doctors']);
         
 
         $this->command->info('Roles and Permissions seeded successfully!');
