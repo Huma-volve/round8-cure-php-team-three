@@ -30,25 +30,22 @@ class AuthController extends Controller
 
     if(!$user){
      
-        return $this->redirectWithNoCache
-            ->with('login_message', 'Login First');
+        return redirect()->route('login')->with('login_message', 'Login First');
     }
 
     if ($user->hasRole('patient')) {
      
-        return $this->redirectWithNoCache('welcome');
+        return redirect()->route('welcome');
     }
 
     if ($user->hasRole('doctor')) {
      
-        return $this->redirectWithNoCache
-            ->with('doctor_message', 'Welcome Doctor');
+        return redirect()->route('profile.view')->with('doctor_message', 'Welcome Doctor');
     }
 
     if ($user->hasRole('admin') || $user->hasRole('helper') ) {
      
-        return $this->redirectWithNoCache
-            ->with('admin_message', 'Welcome Admin');
+        return redirect()->route('home')->with('admin_message', 'Welcome Admin');
     }
 
   
@@ -67,7 +64,7 @@ class AuthController extends Controller
 
           $request->session()->regenerateToken();
         
-        return $this->redirectWithNoCache('login.form');
+        return redirect()->route()('login.form');
 
        }
 }
