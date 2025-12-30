@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FavouriteResource;
 use Illuminate\Http\Request;
 use App\Models\Doctor;
 
@@ -28,10 +29,12 @@ class FavouriteController extends Controller
         $user = auth()->user();
 
         $favouriteDoctors = $user->favourites()
-            ->with('user', 'doctor.specialization')
+            ->with('doctor.specialization', 'doctor.user')
             ->get();
 
-        return response()->json(['favourites' => $favouriteDoctors], 200);
+        return response()->json([
+            'favourites' => FavouriteResource::collection($favouriteDoctors)
+        ], 200);
     }
 
     public function showFavourite($id)
