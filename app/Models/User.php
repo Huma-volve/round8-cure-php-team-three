@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Patient;
 use App\Models\Doctor;
 use App\Models\Admin;
+use App\Models\Helper;
 use App\Models\Booking;
 use App\Models\Notification;
 use App\Models\Chat;
@@ -104,4 +105,8 @@ class User extends Authenticatable
     return $this->belongsToMany(Doctor::class, 'doctor_helper', 'helper_id', 'doctor_id');
 }
 
+    public function helper()
+    {
+        return $this->hasOne(Helper::class);
+    }
 }
