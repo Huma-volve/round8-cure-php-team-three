@@ -22,7 +22,7 @@
          <h4 class="float-left">
           Doctor Dashboard
         </h4>
-        <form action={{route('logout')}} class="float-right mr-5" method="post">
+        <form action="{{route('logout')}}" method="POST" class="float-right mr-5">
           @csrf
           <button type="submit" class="btn btn-outline-danger mr-5" >Logout</button>
         </form>

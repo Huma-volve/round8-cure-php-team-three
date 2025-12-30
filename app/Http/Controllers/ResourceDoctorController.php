@@ -42,9 +42,7 @@ class ResourceDoctorController extends Controller
     {
         $validation = $request->validated();
 
-        $doctor = Doctor::create($request->validated() + [
-            'password' => Hash::make($validation['password']),
-        ]);
+        $doctor = Doctor::create($validation);
 
         User::find($request->user_id)->assignRole('doctor');
 
@@ -104,14 +102,5 @@ class ResourceDoctorController extends Controller
         $doctor->delete();
 
         return redirect()->route('doctors.index')->with('doctor_message','Deleted Successfully');
-    }
-
-    public function assignHelpers(string $id)
-    {
-        $doctor = Doctor::findOrFail($id);
-
-       
-        
-        return view('admin.assignHelpers');
     }
 }
