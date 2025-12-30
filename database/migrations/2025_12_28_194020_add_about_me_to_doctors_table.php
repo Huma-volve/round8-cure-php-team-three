@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('doctors', function (Blueprint $table) {
-            $table->text('about_me')->nullable()->after('session_price');
+                $table->text('about_me')->nullable()->after('session_price');
+
         });
     }
 

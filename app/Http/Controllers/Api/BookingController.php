@@ -71,14 +71,14 @@ class BookingController extends Controller
 
             Stripe::setApiKey(config('services.stripe.secret'));
 
-            $refund = Refund::create([
-                'payment_intent' => $payment->transaction_id,
-            ]);
+            // $refund = Refund::create([
+            //     'payment_intent' => $payment->transaction_id,
+            // ]);
 
 
             $this->paymentRepositories->update($payment, [
                 'status' => 'refunded',
-                'response' => $refund,
+                // 'response' => $refund,
             ]);
         }
 

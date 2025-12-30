@@ -91,6 +91,20 @@ class User extends Authenticatable
     {
         return $this->hasOne(Admin::class);
     }
+    public function favourites()
+    {
+        return $this->hasMany(Favourite::class);
+    }
+
+    public function is_exists($id)
+    {
+        return $this->favourites()->where('doctor_id',$id)->exists();
+    }
+    public function doctors()
+{
+    return $this->belongsToMany(Doctor::class, 'doctor_helper', 'helper_id', 'doctor_id');
+}
+
     public function helper()
     {
         return $this->hasOne(Helper::class);

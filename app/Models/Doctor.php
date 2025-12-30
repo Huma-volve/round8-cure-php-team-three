@@ -69,6 +69,10 @@ class Doctor extends Authenticatable
     {
         return $this->notifications()->where('is_read', false);
     }
+    public function favourites()
+    {
+        return $this->hasMany(Favourite::class, 'doctor_id');
+    }
 
    
 
