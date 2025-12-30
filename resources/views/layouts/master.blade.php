@@ -56,6 +56,13 @@
       </div>
     </form>
 
+     <form action="{{route('logout')}}" method="POST" class="ml-5" enctype="multipart/form-data">
+          @csrf
+          <input type="submit" class="btn btn-outline-danger ml-5"  value="Logout">
+        </form>
+
+        <a href={{route('helper.create')}} class="btn btn-outline-dark ml-5">Assign Helpers</a>
+
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Messages Dropdown Menu -->

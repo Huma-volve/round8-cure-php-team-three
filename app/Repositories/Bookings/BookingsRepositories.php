@@ -56,13 +56,19 @@ class BookingsRepositories
                     $query->where('status', '!=', 'pending');
                 }, 'paymentMethod'])
                 ->where('user_id', $userId)
-                ->whereHas('payment', function($query) {
-                    $query->where('status', '!=', 'pending');
-                })
+                // ->whereHas('payment', function($query) {
+                //     $query->where('status', '!=', 'pending');
+                // })
                 ->orderByDesc('created_at')
                 ->get();
     }
 
+    public function getBookings()
+    {
+        return Booking::with(['user', 'payment', 'paymentMethod', 'doctor'])
+                ->orderByDesc('created_at')
+                ->get();
+    }
 
     public function search($query, $request)
     {
@@ -99,10 +105,10 @@ class BookingsRepositories
             if (!is_array($slot)) {
                 return true;
             }
-            
+
             $slotDate = $slot['date'] ?? '';
             $slotFrom = $slot['from'] ?? '';
-            
+
             // حذف الـ slot إذا التاريخ والوقت يطابقوا
             return !(
                 $slotDate === $bookingDate &&

@@ -42,9 +42,7 @@ class ResourceDoctorController extends Controller
     {
         $validation = $request->validated();
 
-        $doctor = Doctor::create($request->validated() + [
-            'password' => Hash::make($validation['password']),
-        ]);
+        $doctor = Doctor::create($validation);
 
         User::find($request->user_id)->assignRole('doctor');
 

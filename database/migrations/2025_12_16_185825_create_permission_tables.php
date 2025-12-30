@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('guard_name'); // For MyISAM use string('guard_name', 25);
             $table->timestamps();
 
-            $table->unique(['name', 'guard_name']);
+            $table->unique(['name', 'guard_name']);  
         });
 
         Schema::create($tableNames['roles'], static function (Blueprint $table) use ($teams, $columnNames) {

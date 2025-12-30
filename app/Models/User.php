@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Patient;
 use App\Models\Doctor;
 use App\Models\Admin;
+use App\Models\Helper;
 use App\Models\Booking;
 use App\Models\Notification;
 use App\Models\Chat;
@@ -89,5 +90,23 @@ class User extends Authenticatable
     public function admin()
     {
         return $this->hasOne(Admin::class);
+    }
+    public function favourites()
+    {
+        return $this->hasMany(Favourite::class);
+    }
+
+    public function is_exists($id)
+    {
+        return $this->favourites()->where('doctor_id',$id)->exists();
+    }
+    public function doctors()
+{
+    return $this->belongsToMany(Doctor::class, 'doctor_helper', 'helper_id', 'doctor_id');
+}
+
+    public function helper()
+    {
+        return $this->hasOne(Helper::class);
     }
 }

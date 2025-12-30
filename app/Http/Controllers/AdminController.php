@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\User;
 use App\Models\Payment;
 use App\Repositories\Bookings\BookingsRepositories;
 use App\Repositories\Payments\PaymentRepositories;
@@ -77,6 +78,7 @@ class AdminController extends Controller
             'payment' => $booking->payment
         ]);
     }
+  
 
 
 }

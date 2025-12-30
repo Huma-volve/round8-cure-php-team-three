@@ -7,41 +7,34 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="float-left">
-                            Doctors
-                            <span class="badge badge-info">{{count($doctors)}}</span>
+                            helpers
+                            <span class="badge badge-info">{{count($helpers)}}</span>
                         </div>
                         <div class="float-right">
-                            <a href={{route('doctors.create')}} class="btn btn-success">Create New Doctor</a>
+                          
                             <a href={{route('home')}} class="btn btn-primary">Back</a>
                         </div>
                     </div>
                     <div class="card-body">
-                        @if (session('doctor_message'))
-                        <h4 class="alert alert-success text-center">{{session('doctor_message')}}</h4>
+                        @if (session('helper_message'))
+                        <h4 class="alert alert-success text-center">{{session('helper_message')}}</h4>
                         @endif
                             <table class="table table-dark text-center table-responsive-lg">
                                 <thead>
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th>Operations</th>
+                                    <th>Mobile Phone</th>
+                                    <th>Profile Photo</th>
                                 </thead>
                                 <tbody>
-                                    @foreach ($doctors as $item)
+                                    @foreach ($helpers as $item)
                                     <tr>
                                         <td>{{$item->id}}</td>   
                                         <td>{{$item->user->name}}</td>
                                         <td>{{$item->user->email}}</td>
-                                        <td class="d-flex justify-content">
-                                            <a href={{route('doctors.show',$item->id)}} class="btn btn-success mr-2">show</a>
-                                            <a href={{route('doctors.edit',$item->id)}} class="btn btn-warning">edit</a>
-                                            <form action={{route('doctors.destroy',$item->id)}} method="post" enctype="multipart/form-data">
-                                                @csrf
-                                                @method('delete')
-                                                <button class="btn btn-danger ml-2 mr-2">delete</button>
-                                            </form>
-                                            {{-- <a href={{route('assign.helpers',$item->id)}} class="btn btn-info mr-l">Assign Helpers</a> --}}
-                                        </td>
+                                        <td>{{$item->user->mobile_number}}</td>
+                                        <td>{{$item->user->profile_photo}}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('doctors', function (Blueprint $table) {
-                $table->text('about_me')->nullable()->after('session_price');
+        Schema::create('helpers', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->timestamps();
+});
 
-        });
     }
 
     /**
@@ -22,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('doctors', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('helpers');
     }
 };

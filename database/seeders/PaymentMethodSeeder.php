@@ -13,10 +13,10 @@ class PaymentMethodSeeder extends Seeder
      */
     public function run(): void
     {
-        // Payment_method::create([
-        //     'name' => 'Credit Card',
-        //     'code' => 'credit_card',
-        // ]);
+        Payment_method::create([
+            'name' => 'Credit Card',
+            'code' => 'credit_card',
+        ]);
 
         Payment_method::create([
             'name' => 'PayPal',

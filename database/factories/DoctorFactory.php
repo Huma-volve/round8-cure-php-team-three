@@ -50,7 +50,7 @@ class DoctorFactory extends Factory
                 'lng' => 31.2357 + $this->faker->randomFloat(4, -0.1, 0.1),
                 'address' => 'Cairo, Egypt',
             ],
-
+            'experience_years' => $this->faker->numberBetween(1, 30),
         ];
     }
 }

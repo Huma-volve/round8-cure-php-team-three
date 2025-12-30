@@ -24,5 +24,6 @@ class Admin extends Authenticatable
    {
        return $this->notifications()->where('is_read', false);
    }
+    
 }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Api\FavouriteController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\BookingController;
@@ -82,18 +83,22 @@ Route::get('auth/google/callback',[SocialiteController::class,'handleGoogleCallb
 
 //patient profile
 Route::middleware(['auth:sanctum'])->group(function() {
-Route::get('/patient/profile/show',[PatientProfileController::class ,'show']);
-Route::post('/patient/profile/update',[PatientProfileController::class ,'update']);
-Route::put('/patient/profile/changePassword', [PatientProfileController::class, 'changePassword']);
-Route::post('patient/bookings',[BookingController::class,'store']);
-Route::get('/patient/reviews/top-doctors', [ReviewController::class, 'topRatedDoctors']);
-Route::get('/patient/reviews/doctor/{doctorId}', [ReviewController::class, 'doctorReviews']);
-Route::get('patient/all-bookings',[BookingController::class,'getBookingsUser']);
-Route::post('patient/bookings/{booking}/cancel',[BookingController::class,'cancelByPatient']);
-Route::post('patient/bookings/{booking}/reschedule',[BookingController::class,'rescheduleByPatient']);
+    Route::get('/patient/profile/show',[PatientProfileController::class ,'show']);
+    Route::post('/patient/profile/update',[PatientProfileController::class ,'update']);
+    Route::put('/patient/profile/changePassword', [PatientProfileController::class, 'changePassword']);
+    Route::post('patient/bookings',[BookingController::class,'store']);
+    Route::get('/patient/reviews/top-doctors', [ReviewController::class, 'topRatedDoctors']);
+    Route::get('/patient/reviews/doctor/{doctorId}', [ReviewController::class, 'doctorReviews']);
+    Route::get('patient/all-bookings',[BookingController::class,'getBookingsUser']);
+    Route::post('patient/bookings/{booking}/cancel',[BookingController::class,'cancelByPatient']);
+    Route::post('patient/bookings/{booking}/reschedule',[BookingController::class,'rescheduleByPatient']);
+    Route::post('addOrRemove-favourite/{doctorId}', [FavouriteController::class, 'addOrRemoveFavourite']);
+    Route::get('all-favourites', [FavouriteController::class, 'listFavourites']);
 });
 
 Route::get('payment-methods', [BookingController::class, 'getPaymentMethods']);
+
+Route::get('allBookings', [BookingController::class, 'allBookings']);
 
 
 Route::post('webhook/stripe', [PaymentWebhookController::class, 'handle']);

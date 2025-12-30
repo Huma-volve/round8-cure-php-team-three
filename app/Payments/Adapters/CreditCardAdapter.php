@@ -25,6 +25,7 @@ class CreditCardAdapter implements PaymentAdapter
             'transaction_id' => $intent->id,
             'client_secret' => $intent->client_secret,
             'publishable_key' => config('services.stripe.key'),
+            'intent' => $intent,
         ];
     }
 }

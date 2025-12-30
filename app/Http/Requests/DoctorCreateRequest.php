@@ -22,12 +22,6 @@ class DoctorCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required','string'],
-            'email' => ['required','string','unique:doctors,email','email'],
-            'password' => ['required','string','min:8'],
-            'mobile_number' => ['required','string','max:20'],
-            'license_number' => ['required','integer'],
-            'session_price' => ['required','float'],
             'user_id' => ['required','integer','unique:doctors,user_id','exists:users,id'],
             'specializations_id' => ['required','exists:specializations,id'],
             'availability_slots' => ['nullable'],
