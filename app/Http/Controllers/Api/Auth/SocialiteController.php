@@ -1,48 +1,88 @@
 <?php
+
 namespace App\Http\Controllers\Api\Auth;
+
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 class SocialiteController extends Controller
-{ 
-    public function redirectToGoogle()
-    {
-        return Socialite::driver('google')
+{
+    public function googleLogin(Request $request)
+{
+    $request->validate([
+        'access_token' => 'required|string',
+    ]);
+
+    try {
+
+        $googleUser = Socialite::driver('google')
             ->stateless()
-            ->redirect();
-    }
+            ->userFromToken($request->access_token);
 
-    public function handleGoogleCallback()
-    {
-        try{
-        // user from google
-        $google_user = Socialite::driver('google')
-            ->stateless()
-            ->user();
+        $user = User::where('email', $googleUser->getEmail())->first();
 
-        // search by social_id
-        $user = User::where('social_id', $google_user->id)->first();
+        if (!$user) {
 
-        // if not found, search by email
-        if (!$user && $google_user->email) {
-            $user = User::where('email', $google_user->email)->first();
+            $user = User::create([
+
+                 'name' => $googleUser->getName() 
+              
+                 ?? $googleUser->getNickname() 
+              
+                 ?? explode('@', $googleUser->getEmail())[0],
+                
+                 'email'    => $googleUser->getEmail(),
+
+                'social_type' => 'google',
+                
+                'social_id'=> $googleUser->getId(),
+                
+                'password' => bcrypt(Str::random(16)),
+            ]);
+
+        } else {
+
+            if (!$user->social_id) {
+
+                $user->update([
+                    'social_type'  => 'google',
+
+                    'social_id' => $googleUser->getId(),
+                ]);
+            }
         }
 
-        // create user if not exists
-        if (!$user) 
-       return response()->json([
-            'message' => 'Account Not Found Sign Up First'
-            ], 401);
+        $token = $user->createToken('google-login')->plainTextToken;
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Google login failed',
-                'error'   => $e->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+
+            'status'  => true,
+
+            'message' => 'Login Successfully',
+
+            'data'    => [
+
+                'user'  => $user,
+
+                'token' => $token,
+            ]
+        ], 200);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+
+            'status'  => false,
+
+            'message' => 'Google login failed',
+
+            'error'   => $e->getMessage(),
+
+        ], 401);
     }
 }
 
-
-
+}

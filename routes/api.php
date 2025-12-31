@@ -77,8 +77,7 @@ Route::post('sendOtp',[OtpController::class,'sendOtp']);
 Route::post('otpVerify',[OtpController::class,'otpVerify']);
 
 //log in with google
-Route::get('auth/google',[SocialiteController::class,'redirectToGoogle']);
-Route::get('auth/google/callback',[SocialiteController::class,'handleGoogleCallback']);
+Route::post('auth/google',[SocialiteController::class,'googleLogin']);
 
 //patient profile
 Route::middleware(['auth:sanctum'])->group(function() {
