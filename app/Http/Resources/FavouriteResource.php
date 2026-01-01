@@ -52,9 +52,7 @@ class FavouriteResource extends JsonResource
                 'name' => $this->doctor->user->name,
                 'email' => $this->doctor->user->email,
                 'mobile_number' => $this->doctor->user->mobile_number,
-                'profile_photo' => $this->doctor->user->profile_photo
-                    ? asset('storage/images/patients/' . $this->doctor->user->profile_photo)
-                    : null,
+                'profile_photo' => $this->doctor->user->profile_photo ?? null,
 
                 'average_rating' => $this->doctor->reviews->avg('rating'),
                 'reviews_count' => $this->doctor->reviews->count(),
