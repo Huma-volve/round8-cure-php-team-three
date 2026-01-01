@@ -20,6 +20,52 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <div class="wrapper">
 
   <!-- Navbar -->
+  @php
+    $currentUserId = null;
+    if (auth()->check()) {
+      $currentUserId = auth()->id();
+    } elseif (config('auth.guards.doctor') && \Illuminate\Support\Facades\Auth::guard('doctor')->check()) {
+      $currentUserId = optional(\Illuminate\Support\Facades\Auth::guard('doctor')->user())->user_id;
+    } elseif (config('auth.guards.admin') && \Illuminate\Support\Facades\Auth::guard('admin')->check()) {
+      $currentUserId = optional(\Illuminate\Support\Facades\Auth::guard('admin')->user())->user_id;
+    }
+
+    // Notifications Logic
+    $unreadNotificationsCount = 0;
+    $recentNotifications = collect();
+
+    if ($currentUserId) {
+        $unreadNotificationsCount = \App\Models\Notification::where('user_id', $currentUserId)->where('is_read', false)->count();
+        $recentNotifications = \App\Models\Notification::where('user_id', $currentUserId)->orderBy('created_at', 'desc')->limit(10)->get();
+    }
+
+    // Messages Logic
+    $unreadMessagesCount = 0;
+    $recentChats = collect();
+
+    if ($currentUserId) {
+        // Count unread messages
+        $unreadMessagesCount = \App\Models\Message::join('chats', 'messages.chat_id', '=', 'chats.id')
+            ->where('chats.sender_to_id', $currentUserId)
+            ->where('messages.is_read', 0)
+            ->count();
+
+        // Get recent chats
+        $user = \App\Models\User::find($currentUserId);
+        if ($user) {
+            $chatsAsSender = $user->userMessages()->with(['message' => function($q) { $q->latest(); }, 'userMessageTo'])->get();
+            $chatsAsReceiver = $user->userMessagesTo()->with(['message' => function($q) { $q->latest(); }, 'usermassage'])->get(); // Note: usermassage is the relation name in Chat model
+
+            $allChats = $chatsAsSender->merge($chatsAsReceiver);
+
+            $recentChats = $allChats->filter(function($chat) {
+                return $chat->message->isNotEmpty();
+            })->sortByDesc(function($chat) {
+                return $chat->message->first()->created_at;
+            })->take(5);
+        }
+    }
+  @endphp
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -56,86 +102,54 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-comments"></i>
-          <span class="badge badge-danger navbar-badge">3</span>
+          <span class="badge badge-danger navbar-badge">{{ $unreadMessagesCount > 0 ? $unreadMessagesCount : '' }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <a href="#" class="dropdown-item">
+          @forelse($recentChats as $chat)
+            @php
+                $latestMessage = $chat->message->first();
+                $isSender = $chat->sender_id == $currentUserId;
+                $otherUser = $isSender ? $chat->userMessageTo : $chat->usermassage;
+                $otherUserName = $otherUser ? $otherUser->name : 'Unknown User';
+                $otherUserPhoto = $otherUser && $otherUser->profile_photo ? $otherUser->profile_photo : 'Admin/dist/img/user1-128x128.jpg'; // Fallback image
+            @endphp
+            <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="{{ asset('Admin/dist/img/user1-128x128.jpg') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <img src="{{ asset($otherUserPhoto) }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
-                  Brad Diesel
-                  <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                  {{ $latestMessage->is_read ? '' : '<span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>' }}
+                  {{ $otherUserName }}
                 </h3>
-                <p class="text-sm">Call me whenever you can...</p>
-                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                <p class="text-sm">{{ \Illuminate\Support\Str::limit($latestMessage->message, 20) }}</p>
+                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> {{ $latestMessage->created_at->diffForHumans() }}</p>
               </div>
             </div>
             <!-- Message End -->
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <!-- Message Start -->
-            <div class="media">
-              <img src="{{ asset('Admin/dist/img/user8-128x128.jpg') }}" alt="User Avatar" class="img-size-50 img-circle mr-3">
-              <div class="media-body">
-                <h3 class="dropdown-item-title">
-                  John Pierce
-                  <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                </h3>
-                <p class="text-sm">I got your message bro</p>
-                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-              </div>
-            </div>
-            <!-- Message End -->
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <!-- Message Start -->
-            <div class="media">
-              <img src="{{ asset('Admin/dist/img/user3-128x128.jpg') }}" alt="User Avatar" class="img-size-50 img-circle mr-3">
-              <div class="media-body">
-                <h3 class="dropdown-item-title">
-                  Nora Silvester
-                  <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-                </h3>
-                <p class="text-sm">The subject goes here</p>
-                <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-              </div>
-            </div>
-            <!-- Message End -->
-          </a>
-          <div class="dropdown-divider"></div>
+            </a>
+            <div class="dropdown-divider"></div>
+          @empty
+            <span class="dropdown-item text-muted">لا توجد رسائل</span>
+          @endforelse
+
           <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
         </div>
       </li>
+      <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
-        @php
-          $currentUserId = null;
-          if (auth()->check()) {
-            $currentUserId = auth()->id();
-          } elseif (config('auth.guards.doctor') && \Illuminate\Support\Facades\Auth::guard('doctor')->check()) {
-            $currentUserId = optional(\Illuminate\Support\Facades\Auth::guard('doctor')->user())->user_id;
-          } elseif (config('auth.guards.admin') && \Illuminate\Support\Facades\Auth::guard('admin')->check()) {
-            $currentUserId = optional(\Illuminate\Support\Facades\Auth::guard('admin')->user())->user_id;
-          }
-
-          $unreadCount = $currentUserId ? (int) \App\Models\Notification::where('user_id', $currentUserId)->where('is_read', false)->count() : 0;
-          $recentNotifications = $currentUserId ? \App\Models\Notification::where('user_id', $currentUserId)->orderBy('created_at', 'desc')->limit(10)->get() : collect();
-        @endphp
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">{{ $unreadCount }}</span>
+          <span class="badge badge-warning navbar-badge">{{ $unreadNotificationsCount > 0 ? $unreadNotificationsCount : '' }}</span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-header">{{ $unreadCount }} Notifications</span>
+          <span class="dropdown-header">{{ $unreadNotificationsCount }} Notifications</span>
           <div class="dropdown-divider"></div>
           @forelse($recentNotifications as $notification)
             <a href="#" class="dropdown-item">
-              <i class="fas fa-bell mr-2"></i> {{ $notification->title }}
+              <i class="fas fa-envelope mr-2"></i> {{ $notification->title ?? 'Notification' }}
               <span class="float-right text-muted text-sm">{{ optional($notification->created_at)->diffForHumans() }}</span>
-              <div class="text-sm text-muted mt-1">{{ $notification->body }}</div>
+              <div class="text-sm text-muted mt-1">{{ \Illuminate\Support\Str::limit($notification->body, 30) }}</div>
             </a>
             <div class="dropdown-divider"></div>
           @empty
@@ -255,6 +269,50 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- /.content-header -->
 
     <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-check"></i> نجاح!</h5>
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-ban"></i> خطأ!</h5>
+                {{ session('error') }}
+            </div>
+        @endif
+        @if(session('warning'))
+            <div class="alert alert-warning alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-exclamation-triangle"></i> تحذير!</h5>
+                {{ session('warning') }}
+            </div>
+        @endif
+        @if(session('info'))
+            <div class="alert alert-info alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-info"></i> معلومة!</h5>
+                {{ session('info') }}
+            </div>
+        @endif
+         @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fas fa-ban"></i> تنبيه!</h5>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+      </div>
+    </section>
+
     <div class="content">
       <div class="container-fluid">
         <div class="row">
