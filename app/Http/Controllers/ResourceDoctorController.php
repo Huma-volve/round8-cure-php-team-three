@@ -27,11 +27,10 @@ class ResourceDoctorController extends Controller
      */
     public function create()
     {
-        $users = User::doesntHave('doctor')->get();
 
         $specializations = Specialization::all();
 
-        return view ('doctors.create',['users' => $users ,'specializations' => $specializations]);
+        return view ('doctors.create',['specializations' => $specializations]);
 
     }
 
@@ -42,11 +41,36 @@ class ResourceDoctorController extends Controller
     {
         $validation = $request->validated();
 
-        $doctor = Doctor::create($validation);
+            $user = User::firstOrCreate([
+                
+                'email' => $request->email,],[
+                
+                'name' => $request->name,
+            
+                'password' => Hash::make($request->password),
+            
+                'mobile_number' => $request->mobile_number,
+        ]);
 
-        User::find($request->user_id)->assignRole('doctor');
+        $user->assignRole('doctor');
 
-        return redirect()->route('doctors.index')->with('doctor_message','Created Successfully');
+            
+           Doctor::create([
+            'user_id'            => $user->id,                
+   
+            'specializations_id' => $request->specializations_id,
+
+            'license_number' => $request->license_number,
+
+            'session_price' => $request->session_price,
+   
+            'availability_slots' => $request->availability_slots,
+   
+            'clinic_location'    => $request->clinic_location,
+]);
+
+        
+            return redirect()->route('doctors.index')->with('doctor_message','Created Successfully');
     }
 
     /**

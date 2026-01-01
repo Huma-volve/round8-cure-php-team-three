@@ -22,10 +22,35 @@ class DoctorCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required','integer','unique:doctors,user_id','exists:users,id'],
-            'specializations_id' => ['required','exists:specializations,id'],
-            'availability_slots' => ['nullable'],
-            'clinic_location' => ['nullable'],
-        ];
+
+              'name' => ['required','string','max:255','min:2'],
+
+              'email' => ['required','string','max:255','email'],
+              
+              'password' => [
+                        'required',
+                        'min:8',
+                        'regex:/[a-z]/',      
+                        'regex:/[A-Z]/',      
+                        'regex:/[0-9]/',      
+                        'regex:/[@$!%*?&]/',  
+                    ],
+    
+                'mobile_number' => ['required','string','regex:/^(\+2)?01[0-2,5][0-9]{8}$/'],
+
+                'specializations_id' => ['required','exists:specializations,id'],
+
+                
+                'availability_slots' => ['nullable','array'],
+                'availability_slots.*.day' => ['required','string'],
+                'availability_slots.*.from' => ['required'],
+                'availability_slots.*.to' => ['required'],
+
+                'clinic_location' => ['nullable','array'],
+                'clinic_location.city' => ['required','string'],
+                'clinic_location.area' => ['required','string'],
+                'clinic_location.address' => ['required','string'],
+                
+                ];
     }
 }

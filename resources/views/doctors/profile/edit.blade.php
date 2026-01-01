@@ -20,7 +20,7 @@
                         @method('put')
 
                         <div id="slots-wrapper">
-                            @foreach($doctor->availability_slots as $index => $slot)
+                            @foreach($doctor->availability_slots ?? [] as $index => $slot)
                                 <div class="card mb-3 p-3">
                                     <div class="form-group">
                                         <label>Day</label>

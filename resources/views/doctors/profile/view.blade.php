@@ -20,10 +20,10 @@
                     <p class="form-control"><strong>Specialization:</strong> {{ $doctor->specialization->name ?? 'Not Set' }}</p>
                     <p class="form-control"><strong>Clinic Location:</strong> {{ implode(', ', $doctor->clinic_location ?? []) }}</p>
                     <p class="form-control"><strong>Session Price:</strong> ${{ number_format($doctor->session_price, 2) }}</p>
-                    <p class="form-control"><strong>Availability Slots:</strong></p>
 
                     @if(!empty($doctor->availability_slots))
                         <select class="form-control" type='none'>
+                            <option value=""><strong>Availability Slots:</strong></option>
                             @foreach($doctor->availability_slots as $slot)
                                     <option>
                                      <strong>Day:</strong> {{ $slot['day'] ?? '' }} |
@@ -32,11 +32,12 @@
                                     </option>
                             @endforeach
                         </select>
+                        <a href={{ route('edit.slots') }} class="btn btn-primary mt-3">Edit Slots</a>
                     @else
-                        <p>No slots available</p>
+                    <h5 class="alert alert-warning ">No slots available</h5>
+                 
                     @endif
                     </p>
-                    <a href={{ route('edit.slots') }} class="btn btn-primary mt-3">Edit Profile</a>
                 </div>
                     
                     </div>

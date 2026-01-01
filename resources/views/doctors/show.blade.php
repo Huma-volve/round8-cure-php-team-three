@@ -37,8 +37,18 @@
                                     <td>{{$user->mobile_number}}</td>
                                     <td>{{$doctor->license_number}}</td>
                                     <td>{{$doctor->session_price}}</td>
-                                    {{-- <td>{{$doctor->availability_slots}}</td>
-                                    <td>{{$doctor->clinic_location}}</td> --}}
+                                    <td>
+                                    <select name="availability_slots" id="availability_slots">
+                                        @foreach ($doctor->availability_slots as $slot)
+                                        <option value={{ $slot['from'] ?? '-' }} - {{ $slot['to'] ?? '-' }}>{{ $slot['from'] ?? '-' }} - {{ $slot['to'] ?? '-' }}</option>
+                                        @endforeach
+                                    </select>
+                                    </td>
+                                    <td>
+                                        {{ $doctor->clinic_location['city'] ?? '' }} 
+                                        {{ $doctor->clinic_location['area'] ?? '' }} 
+                                        {{ $doctor->clinic_location['address'] ?? '' }}
+                                    </td>
                                    
                                 </tr>
                                 
